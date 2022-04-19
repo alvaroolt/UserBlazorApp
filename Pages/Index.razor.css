@@ -1,0 +1,20 @@
+﻿body {
+    color: red;
+}
+
+.fatherTop {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.divArticles {
+    color: red;
+}
+
+.divOperations {
+    color: green;
+}
+
+div {
+    color: yellow;
+}
