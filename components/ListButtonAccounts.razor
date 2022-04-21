@@ -13,6 +13,7 @@ else
     {
         <div class="card m-4" style="min-width:18rem; max-width:20%;">
             <SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="@ac.user_id">@ac.money</SfButton>
+
         </div>
     }
     @*</div>*@
@@ -25,7 +26,7 @@ else
     public IEnumerable<Account> SelectedAccounts { get; set; }
 
     [Parameter]
-    public int Id { get; set; }
+    public int Id { get; set; } = -1;
     private int _id { get; set; }
     //protected override async Task OnInitializedAsync()
     //{
