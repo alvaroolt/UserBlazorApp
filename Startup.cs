@@ -33,6 +33,10 @@ namespace UserBlazorApp
             {
                 user.BaseAddress = new Uri("https://localhost:44327/");
             });
+            services.AddHttpClient<IServiceAccount, ServiceAccount>(account =>
+            {
+                account.BaseAddress = new Uri("https://localhost:44327/");
+            });
             services.AddSyncfusionBlazor();
         }
 

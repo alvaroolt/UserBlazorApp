@@ -1,0 +1,66 @@
+﻿@*<h3>ListButton</h3>*@
+@*@inherits ListUserBase*@
+@using WebServiceApiRest.Models;
+@using UserBlazorApp.Services;
+
+@if (Users == null)
+{
+    <text>Cargando...</text>
+}
+else
+{
+    @*<div class="card-deck" style="justify-content: space-around">*@
+    @foreach (User u in Users)
+    {
+        <div class="card m-4" style="min-width:18rem; max-width:20%;">
+            <SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="@u.id">@u.name</SfButton>
+        </div>
+    }
+    @*</div>*@
+}
+
+@code {
+
+    [Inject]
+    public IServiceUser ServiceUser { get; set; }
+    public IEnumerable<User> Users { get; set; }
+    public IEnumerable<User> SelectedUsers { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+    private int _id { get; set; }
+    //protected override async Task OnInitializedAsync()
+    //{
+
+    //}
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await getUsers(Id);
+        await base.OnParametersSetAsync();
+    }
+
+    public async Task getUsers(int idCode)
+    {
+        if (Id == 0)
+        {
+            Users = (await ServiceUser.DameUsers()).ToList();
+        }
+        else
+        {
+            Users = (await ServiceUser.DameUser(Id)).ToList();
+        }
+    }
+
+
+
+    //public List<User> UsersList { get; set; }
+
+    //private async void botonClicado(User user)
+    //{
+    //    User _user = new User() { name = user.name };
+
+    //    HttpClient httpClient = new HttpClient();
+    //    var response = await httpClient.PostAsJsonAsync("https://localhost:44327/api/user", _user);
+    //}
+}

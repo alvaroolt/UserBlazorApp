@@ -8,7 +8,7 @@ using WebServiceApiRest.Models;
 
 namespace UserBlazorApp.Services
 {
-    public class ServiceUser:IServiceUser
+    public class ServiceUser : IServiceUser
     {
         private readonly HttpClient httpClient;
 
@@ -30,7 +30,7 @@ namespace UserBlazorApp.Services
         public async Task Post()
         {
 
-            User _user = new User() {name="" };
+            User _user = new User() { name = "" };
 
             await httpClient.PostAsJsonAsync("api/user", _user);
         }

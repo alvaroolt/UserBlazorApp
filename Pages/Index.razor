@@ -3,15 +3,19 @@
 
 <div style="display: flex; flex-wrap: wrap">
     <div style="background-color: lightblue; width: 50%;">
-        <Grid @ref="grid" Id="@selectedId"></Grid>
+        <Grid Id="@selectedId"></Grid>
     </div>
     <div style="background-color: red; width: 50%; padding: 10% 0;">
         <p>Este texto corresponde al div que contiene botones</p>
     </div>
 </div>
+<div class="card-deck" style="justify-content: space-around">
+    <ListButtonUsers></ListButtonUsers>
+    @*<ListButtonAccounts></ListButtonAccounts>*@
+</div>
 @*<ListButton></ListButton>*@
-<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="0" @onclick="e => botonClicado(0)">0</SfButton>
-<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>
+@*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="0" @onclick="e => botonClicado(0)">0</SfButton>
+<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>*@
 
 <div style="background-color: blue; width: 100%; padding: 2% 0;"><p>Este texto corresponde al div "footer"</p></div>
 
