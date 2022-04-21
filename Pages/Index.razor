@@ -1,23 +1,70 @@
 ﻿@page "/"
 @using UserBlazorApp.components;
 
-<div style="display: flex; flex-wrap: wrap">
-    <div style="background-color: lightblue; width: 50%;">
+<div style="display: flex; flex-wrap: wrap;">
+    <div style="background-color: lightgray; width: 70%;">
         <Grid Id="@selectedId"></Grid>
     </div>
-    <div style="background-color: red; width: 50%; padding: 10% 0;">
-        <p>Este texto corresponde al div que contiene botones</p>
+    <div style="width: 30%;">
+        <div class="container border">
+            <div class="row justify-content-md-center" style="margin: 2% 0;">
+                <div class="col-auto">
+                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+                </div>
+            </div>
+            <div class="row justify-content-md-center" style="margin: 2% 0;">
+                <div class="col-auto">
+                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+                </div>
+            </div>
+            <div class="row justify-content-md-center" style="margin: 2% 0;">
+                <div class="col-auto">
+                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+                </div>
+            </div>
+            <div class="row justify-content-md-center" style="margin: 2% 0;">
+                <div class="col-auto">
+                    <button class="btn btn-primary p-4 rounded-0">Categorías</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="card-deck" style="justify-content: space-around">
+<div class="m-4 row d-flex justify-content-center border" style="height: 200px; overflow-y:scroll">
     <ListButtonUsers></ListButtonUsers>
-    @*<ListButtonAccounts Id="41"></ListButtonAccounts>*@
 </div>
 @*<ListButton></ListButton>*@
 @*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="0" @onclick="e => botonClicado(0)">0</SfButton>
 <SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>*@
 
-<div style="background-color: blue; width: 100%; padding: 2% 0;"><p>Este texto corresponde al div "footer"</p></div>
+<div style="background-color: lightgreen; width: 100%; padding: 2% 0;">
+    <div class="row justify-content-md-center">
+        <div class="col-auto" style="margin: auto 2%">
+            <button class="btn btn-primary p-4 rounded-0">Salir</button>
+        </div>
+        <div class="col-auto" style="margin: auto 2% ">
+            <button class="btn btn-primary p-4 rounded-0">Boton</button>
+        </div>
+        <div class="col-auto" style="margin: auto 2% ">
+            <button class="btn btn-primary p-4 rounded-0">Boton</button>
+        </div>
+        <div class="col-auto" style="margin: auto 2% ">
+            <button class="btn btn-primary p-4 rounded-0">Boton</button>
+        </div>
+        <div class="col-auto" style="margin: auto 2% ">
+            <button class="btn btn-primary p-4 rounded-0">Boton</button>
+        </div>
+    </div>
+</div>
 
 @code {
     Grid grid;
