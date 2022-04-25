@@ -17,11 +17,9 @@
             @if (cont >= 4)
             {
                 @*<div class="row">*@
-                    <div class="col text-center" style="margin: 1%">
-                        <div style="text-align:center">
-                            <SfButton type="button" href='#' class="btn btn-primary p-4 rounded-0" name="@u.id" @onclick="e => showAccounts(u.id)">@u.name</SfButton>
-                        </div>
-                    </div>
+                <div class="col text-center collistbutton">
+                    <SfButton type="button" href='#' class="btn btn-primary p-4 rounded-0 listbutton" name="@u.id" @onclick="e => showAccounts(u.id)">@u.name</SfButton>
+                </div>
                 @*</div>*@
             }
         }

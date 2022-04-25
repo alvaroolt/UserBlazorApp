@@ -4,17 +4,14 @@
 @using WebServiceApiRest.Models
 @using UserBlazorApp.Services;
 
-<SfGrid DataSource="Users" AllowSorting="true" EnablePersistence="true">
+<SfGrid DataSource="Users">
     <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" PersistSelection="true"></GridSelectionSettings>
     <GridEditSettings NewRowPosition="NewRowPosition.Bottom"></GridEditSettings>
-    <GridColumns>
-        <GridColumn Field="@nameof(User.id)" HeaderText="ID" Width="10">
-        </GridColumn>
-        <GridColumn Field="@nameof(User.name)" HeaderText="Name" Width="30">
-        </GridColumn>
-        <GridColumn Field="@nameof(User.password)" HeaderText="Pass" Width="30">
-        </GridColumn>
-    </GridColumns>
+    <GridTemplates>
+        <EmptyRecordTemplate>
+            <span></span>
+        </EmptyRecordTemplate>
+    </GridTemplates>
 </SfGrid>
 
 @code {

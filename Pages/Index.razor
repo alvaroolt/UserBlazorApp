@@ -2,74 +2,76 @@
 @using UserBlazorApp.components;
 
 @*  otra manera de utilizar css
-    <style>
-    body {
-        background-color: red;
-    }
-</style>*@
+        <style>
+        body {
+            background-color: red;
+        }
+    </style>*@
 
-<div style="display: flex; flex-wrap: wrap;">
-    <div style="background-color: lightgray; width: 70%;">
+<div class="contenedorgridandmenubuttons">
+    <div class="contenedorgrid">
         <Grid Id="@selectedId"></Grid>
     </div>
-    <div style="width: 30%;">
+    <div class="contenedormenubuttons">
         <div class="container border">
-            <div class="row justify-content-md-center" style="margin: 2% 0;">
-                <div id="prueba" class="col-auto">
-                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+            <p class="visorprecio">0.00€</p>
+            <div class="row justify-content-md-center rowmenubuttons">
+                <div class="col-auto colmenubutton">
+                    <button class="menubutton">Boton</button>
                 </div>
-                <div class="col-auto">
-                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
-                </div>
-            </div>
-            <div class="row justify-content-md-center" style="margin: 2% 0;">
-                <div class="col-auto">
-                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
-                </div>
-                <div class="col-auto">
-                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+                <div class="col-auto colmenubutton">
+                    <button class="menubutton">Boton</button>
                 </div>
             </div>
-            <div class="row justify-content-md-center" style="margin: 2% 0;">
-                <div class="col-auto">
-                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+            <div class="row justify-content-md-center rowmenubuttons">
+                <div class="col-auto colmenubutton">
+                    <button class="menubutton">Boton</button>
                 </div>
-                <div class="col-auto">
-                    <button class="btn btn-primary p-4 rounded-0">Boton</button>
+                <div class="col-auto colmenubutton">
+                    <button class="menubutton">Boton</button>
                 </div>
             </div>
-            <div class="row justify-content-md-center" style="margin: 2% 0;">
+            <div class="row justify-content-md-center rowmenubuttons">
+                <div class="col-auto colmenubutton">
+                    <button class="menubutton">Boton</button>
+                </div>
+                <div class="col-auto colmenubutton">
+                    <button class="menubutton">Boton</button>
+                </div>
+            </div>
+            <div class="row justify-content-md-center rowmenubuttons">
                 <div class="col-auto">
-                    <button class="btn btn-primary p-4 rounded-0">Categorías</button>
+                    <button class="menubutton">Categorías</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="m-4 row d-flex justify-content-center border" style="height: 200px; overflow-y:scroll">
+<div class="contenedorlistbuttons">
     <ListButtonUsers></ListButtonUsers>
 </div>
 @*<ListButton></ListButton>*@
 @*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="0" @onclick="e => botonClicado(0)">0</SfButton>
-<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>*@
+    <SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>*@
 
-<div style="background-color: lightgreen; width: 100%; padding: 2% 0;">
-    <div class="row justify-content-md-center">
-        <div class="col-auto" style="margin: auto 2%">
-            <button class="btn btn-primary p-4 rounded-0">Salir</button>
-        </div>
-        <div class="col-auto" style="margin: auto 2% ">
-            <button class="btn btn-primary p-4 rounded-0">Boton</button>
-        </div>
-        <div class="col-auto" style="margin: auto 2% ">
-            <button class="btn btn-primary p-4 rounded-0">Boton</button>
-        </div>
-        <div class="col-auto" style="margin: auto 2% ">
-            <button class="btn btn-primary p-4 rounded-0">Boton</button>
-        </div>
-        <div class="col-auto" style="margin: auto 2% ">
-            <button class="btn btn-primary p-4 rounded-0">Boton</button>
-        </div>
+<div class="contenedornavbuttons">
+    <div class="col-auto contenedornavbutton">
+        <button class="btn btn-primary p-4 rounded-0 navbutton">Salir</button>
+    </div>
+    <div class="col-auto contenedornavbutton">
+        <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+    </div>
+    <div class="col-auto contenedornavbutton">
+        <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+    </div>
+    <div class="col-auto contenedornavbutton">
+        <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+    </div>
+    <div class="col-auto contenedornavbutton">
+        <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+    </div>
+    <div class="col-auto contenedornavbutton">
+        <p class="visormesa">Mesa nºX</p>
     </div>
 </div>
 
