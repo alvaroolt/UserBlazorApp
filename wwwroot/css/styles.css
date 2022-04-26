@@ -1,5 +1,12 @@
 ﻿body {
-    /*background-color: red;*/
+    /*display: flex;
+    flex-direction: column;*/
+}
+
+.px-4 {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .contenedorgridandmenubuttons {
@@ -48,7 +55,7 @@
 }
 
 .contenedorlistbuttons {
-    height: 250px;
+    height: 465px;
     overflow-y: scroll;
     margin: 0 !important;
     display: flex;
@@ -75,11 +82,11 @@
     white-space: normal;
 }
 
-.contenedornavbuttons {
+.footer {
     background-color: lightgreen;
     width: 100%;
     padding: 2% 0;
-    margin: 0 auto;
+    margin-top:auto;
     display: flex;
     flex-wrap: wrap;
 }
@@ -100,10 +107,9 @@
 }
 
 .navbutton {
-    height: 4em;
-    border-radius: 5px;
+    /*height: 4em;*/
+    border-radius: 5px !important;
     font-size: 13px;
-    padding: 5% !important;
     margin: 0 2%;
     padding: 0 2% !important;
     text-align: center;
