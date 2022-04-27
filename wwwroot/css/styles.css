@@ -3,6 +3,11 @@
     flex-direction: column;*/
 }
 
+.container {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
 .px-4 {
     height: 100vh;
     display: flex;
@@ -32,10 +37,6 @@
     width: 40%;
 }
 
-    .contenedormenubuttons div {
-        padding: 0 !important;
-    }
-
 .rowmenubuttons {
     margin: 2% 0;
     justify-content: center;
@@ -43,15 +44,25 @@
 
 .colmenubutton {
     padding: 0 !important;
+    margin: 2%;
 }
 
 .menubutton {
-    background: blue;
-    height: 4em;
+    background: lightgray;
     border-radius: 5px;
     color: #fff;
     text-align: center;
     font-size: 10px;
+    width: 65px;
+    height: 65px;
+}
+
+.menuimg {
+    width: 45px;
+}
+
+.categorybutton {
+    width: 85px !important;
 }
 
 .contenedorlistbuttons {
@@ -70,7 +81,6 @@
 }
 
 .listbutton {
-    height: 4em;
     border-radius: 5px;
     font-size: 13px;
     padding: 5% !important;

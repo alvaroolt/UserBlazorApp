@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="Pages\css\**" />
+    <Compile Remove="wwwroot\NewFolder1\**" />
     <Content Remove="Pages\css\**" />
+    <Content Remove="wwwroot\NewFolder1\**" />
     <EmbeddedResource Remove="Pages\css\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder1\**" />
     <None Remove="Pages\css\**" />
+    <None Remove="wwwroot\NewFolder1\**" />
   </ItemGroup>
 
   <ItemGroup>
