@@ -31,6 +31,7 @@
     border: 2px solid black;
     margin-left: auto;
     padding: 0 2%;
+    margin-bottom: 0;
 }
 
 .contenedormenubuttons {
@@ -50,7 +51,7 @@
 .menubutton {
     background: lightgray;
     border-radius: 5px;
-    color: #fff;
+    color: black;
     text-align: center;
     font-size: 10px;
     width: 65px;
@@ -93,18 +94,17 @@
 }
 
 .footer {
-    background-color: lightgreen;
     width: 100%;
     padding: 2% 0;
-    margin-top:auto;
+    margin-top: auto;
     display: flex;
     flex-wrap: wrap;
 }
 
 .visormesa {
     text-align: center;
-    line-height:normal;
-    font-size: 12px;
+    line-height: normal;
+    font-size: 13px;
     width: max-content;
     border: 2px solid black;
     padding: 0 2%;
@@ -118,6 +118,7 @@
 
 .navbutton {
     /*height: 4em;*/
+    border: 1px solid black;
     border-radius: 5px !important;
     font-size: 13px;
     margin: 0 2%;
@@ -125,8 +126,173 @@
     text-align: center;
     width: 40px;
     height: 40px;
+    color: black;
+    background-color: lightgray;
 }
 
 .e-grid .e-gridheader .e-columnheader {
     display: none;
-} 
+}
+
+.contenedornumpad {
+    margin: 0 auto;
+    padding: 1%;
+    border: 1px solid black;
+}
+
+.contenedorvisornumpad {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1%;
+}
+
+    .contenedorvisornumpad label {
+        margin: 0;
+        text-align: center;
+        font-size: 25px;
+        background-color: white;
+    }
+
+    .contenedorvisornumpad input {
+        margin: 0 10%;
+        font-size: 20px;
+    }
+
+.rownumpad {
+    justify-content: center;
+}
+
+.colnumpad {
+    margin: 3% 0;
+}
+
+.numpadbutton {
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    border-radius: 10px;
+}
+
+.numpadlargebutton {
+    width: 100px;
+    height: 50px;
+    font-size: 30px;
+    border-radius: 10px;
+}
+
+@media (min-width: 700px) and (max-width: 999px) {
+    .contenedorvisornumpad label {
+        font-size: 35px;
+    }
+
+    .contenedorvisornumpad input {
+        font-size: 30px;
+    }
+
+    .contenedornumpad {
+        padding-top: 1%;
+    }
+
+    .colnumpad {
+        margin: 1% 0;
+    }
+
+    .numpadbutton {
+        width: 90px;
+        height: 90px;
+        font-size: 55px;
+    }
+
+    .numpadlargebutton {
+        width: 180px;
+        height: 90px;
+        font-size: 55px;
+    }
+
+    .navbutton {
+        width: 85px;
+        height: 55px;
+        font-size: 20px;
+    }
+
+    .visormesa {
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 1000px) {
+
+    .visorprecio {
+        font-size: 35px;
+    }
+
+    .rowmenubuttons {
+        margin: 0;
+    }
+
+    .colmenubutton {
+        margin: 1% 5%;
+    }
+
+    .menubutton {
+        width: 120px;
+        height: 80px;
+        font-size: 20px;
+    }
+
+    .menubutton img {
+        width: 55px;
+    }
+
+    .categorybutton {
+        width: 130px !important;
+    }
+
+    .listbutton {
+        width: 140px;
+        height: 140px;
+        font-size: 23px;
+    }
+
+    .footer {
+        padding: 1% 0;
+    }
+
+    .navbutton {
+        width: 115px;
+        height: 70px;
+        font-size: 25px;
+    }
+
+    .visormesa {
+        font-size: 35px;
+    }
+
+    .contenedorvisornumpad label {
+        font-size: 50px;
+    }
+
+    .contenedorvisornumpad input {
+        font-size: 40px;
+    }
+
+    .contenedornumpad {
+        padding-top: 1%;
+    }
+
+    .colnumpad {
+        margin: 1% 0;
+    }
+
+    .numpadbutton {
+        width: 120px;
+        height: 120px;
+        font-size: 75px;
+    }
+
+    .numpadlargebutton {
+        width: 230px;
+        height: 120px;
+        font-size: 75px;
+    }
+}

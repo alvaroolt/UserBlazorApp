@@ -1,13 +1,6 @@
 ﻿@page "/"
 @using UserBlazorApp.components;
 
-@*  otra manera de utilizar css
-        <style>
-        body {
-            background-color: red;
-        }
-    </style>*@
-
 <div class="contenedorgridandmenubuttons">
     <div class="contenedorgrid">
         <Grid Id="@selectedId"></Grid>
@@ -17,7 +10,7 @@
             <p class="visorprecio">0.00€</p>
             <div class="row justify-content-md-center rowmenubuttons">
                 <div class="col-auto colmenubutton">
-                    <button class="menubutton"><img class="menuimg" src="images/deleteLine.png"/></button> @*evitar el ~/*@
+                    <button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button> @*evitar el ~/*@
                 </div>
                 <div class="col-auto colmenubutton">
                     <button class="menubutton">Boton</button>
@@ -47,12 +40,14 @@
         </div>
     </div>
 </div>
-<div class="contenedorlistbuttons">
-    <ListButtonUsers></ListButtonUsers>
-</div>
+@*<div class="contenedorlistbuttons">
+        <ListButtonUsers></ListButtonUsers>
+    </div>*@
 @*<ListButton></ListButton>*@
 @*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="0" @onclick="e => botonClicado(0)">0</SfButton>
     <SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>*@
+
+<Numpad></Numpad>
 
 <footer class="footer">
     <div class="col-auto contenedornavbutton">

@@ -31,11 +31,11 @@ namespace UserBlazorApp
             services.AddServerSideBlazor();
             services.AddHttpClient<IServiceUser, ServiceUser>(user =>
             {
-                user.BaseAddress = new Uri("http://localhost:44327/");
+                user.BaseAddress = new Uri("https://localhost:44327/");
             });
             services.AddHttpClient<IServiceAccount, ServiceAccount>(account =>
             {
-                account.BaseAddress = new Uri("http://localhost:44327/");
+                account.BaseAddress = new Uri("https://localhost:44327/");
             });
             services.AddSyncfusionBlazor();
         }

@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Content Remove="Pages\Comandas.razor" />
-    <Content Remove="wwwroot\css\styles.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,10 +38,6 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\css\styles.css" />
   </ItemGroup>
 
 </Project>
