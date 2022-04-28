@@ -1,22 +1,18 @@
-﻿body {
-    /*display: flex;
-    flex-direction: column;*/
-}
-
+﻿/*le añadimos propiedades a la clase de bootstrap container*/
 .container {
     margin: 0 !important;
     padding: 0 !important;
 }
 
-.px-4 {
+/* contenedor padre de los componentes de la página index*/
+.padreindex {
     height: 100vh;
-    display: flex;
+    display: flex; /*visualización del elemento*/
     flex-direction: column;
 }
 
 .contenedorgridandmenubuttons {
     display: flex;
-    flex-wrap: wrap;
 }
 
 .contenedorgrid {
@@ -49,7 +45,7 @@
 }
 
 .menubutton {
-    background: lightgray;
+    background-color: lightgray;
     border-radius: 5px;
     color: black;
     text-align: center;
@@ -130,6 +126,7 @@
     background-color: lightgray;
 }
 
+/* ocultar header del grid*/
 .e-grid .e-gridheader .e-columnheader {
     display: none;
 }

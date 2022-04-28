@@ -1,4 +1,7 @@
-﻿@page "/"
+﻿@*fichero raiz del proyecto*@
+@page "/"
+
+@*hacemos referencia a los componentes*@
 @using UserBlazorApp.components;
 
 <div class="contenedorgridandmenubuttons">
@@ -47,6 +50,7 @@
 @*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="0" @onclick="e => botonClicado(0)">0</SfButton>
     <SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>*@
 
+@*llamamos al teclado numérico*@
 <Numpad></Numpad>
 
 <footer class="footer">
@@ -73,6 +77,7 @@
 @code {
     Grid grid;
 
+    //pasamos -1 para que no muestre ningún registro en el grid
     private int selectedId = -1;
 
     private void botonClicado(int num)

@@ -27,23 +27,28 @@ namespace UserBlazorApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddRazorPages(); // agrega servicios MVC para páginas al IServiceCollection especificado. https://docs.microsoft.com/es-es/dotnet/api/microsoft.extensions.dependencyinjection.mvcservicecollectionextensions.addrazorpages?view=aspnetcore-6.0
+            services.AddServerSideBlazor(); // agrega server-side blazor a la colección de servicios
+
+            // AddHttpClient permite enviar solicitudes y recibir respuestas HTTP de un recurso identificado por un URI.
             services.AddHttpClient<IServiceUser, ServiceUser>(user =>
             {
-                user.BaseAddress = new Uri("https://localhost:44327/");
+                user.BaseAddress = new Uri("https://localhost:44327/"); //dirección de la API
             });
             services.AddHttpClient<IServiceAccount, ServiceAccount>(account =>
             {
-                account.BaseAddress = new Uri("https://localhost:44327/");
+                account.BaseAddress = new Uri("https://localhost:44327/"); //dirección de la API
             });
-            services.AddSyncfusionBlazor();
+            services.AddSyncfusionBlazor(); // agrega el servicio de Syncfusion para Blazor
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // Este método se llama en el runtime. Se usa para configurar las peticiones HTTP entre procesos
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Licencia para utilizar los servicios de Syncfusion
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBMAY9C3t2VVhhQlFaclhJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRdkFjXn9acnNWRWZUVE0=;NjA5MDc0QDMyMzAyZTMxMmUzMGpuc2tpVE1kRU9ITjY2RzJyQm4yenlOUUlJSEFMME12NytrcWs5eDNaWXc9");
+
+            // comprueba si el nombre del entorno de desarrollo actual es Producción
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -54,8 +59,6 @@ namespace UserBlazorApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

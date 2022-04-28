@@ -28,6 +28,7 @@
 
     //}
 
+    //OnParametersSetAsync se ejecuta cada vez que se actualiza el estado del componente
     protected override async Task OnParametersSetAsync()
     {
         await getUsers(Id);
@@ -38,10 +39,12 @@
     {
         if (Id == 0)
         {
+            //si el id es 0, obtiene la lista completa de usuarios
             Users = (await ServiceUser.DameUsers()).ToList();
         }
         else
         {
+            //si no, obtiene una lista de un único usuario según el id que recibe
             Users = (await ServiceUser.DameUser(Id)).ToList();
         }
     }

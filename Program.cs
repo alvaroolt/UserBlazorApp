@@ -13,6 +13,7 @@ namespace UserBlazorApp
 {
     public class Program
     {
+        // La función Main es el comienzo del programa
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
