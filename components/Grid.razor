@@ -2,7 +2,7 @@
 @using WebServiceApiRest.Models
 @using UserBlazorApp.Services;
 
-<SfGrid DataSource="Documentos">
+<SfGrid DataSource="LdocumentosEnum">
     <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" PersistSelection="true"></GridSelectionSettings>
     <GridEditSettings NewRowPosition="NewRowPosition.Bottom"></GridEditSettings>
     <GridTemplates>
@@ -10,6 +10,12 @@
             <span></span>
         </EmptyRecordTemplate>
     </GridTemplates>
+    <GridColumns>
+        <GridColumn Field="@(nameof(Ldocumentos.ldoc_cantidad))" />
+        <GridColumn Field="@(nameof(Ldocumentos.ldoc_descripcion))" />
+        <GridColumn Field="@(nameof(Ldocumentos.ldoc_importe_pvp))" />
+        <GridColumn Field="@(nameof(Ldocumentos.ldoc_importe))" />
+    </GridColumns>
 </SfGrid>
 
 @code {
@@ -19,8 +25,9 @@
     //public IEnumerable<User> SelectedUsers { get; set; }
 
     [Inject]
-    public static IServiceComprobarSiExisteMesa ServiceComprobarSiExisteMesa { get; set; }
-    public static IEnumerable<Documentos> Documentos { get; set; }
+    public IServiceComprobarSiExisteMesa ServiceComprobarSiExisteMesa { get; set; }
+    public IEnumerable<Documentos> DocumentosEnum { get; set; }
+    public IEnumerable<Ldocumentos> LdocumentosEnum { get; set; }
     public IEnumerable<Documentos> SelectedDocumentos { get; set; }
 
     //[Parameter]
@@ -56,8 +63,13 @@
     //    }
     //}
 
-    public static async Task getDocumentos(int ordenCode)
+    public async Task getDocumentos(int ordenCode)
     {
-        Documentos = (await ServiceComprobarSiExisteMesa.DameDocumentos(ordenCode)).ToList();
+        //string file = ServiceComprobarSiExisteMesa.DameDocumentos(26).ToString();
+        DocumentosEnum = (await ServiceComprobarSiExisteMesa.DameDocumentos(ordenCode)).ToList();
+        foreach (var documento in DocumentosEnum)
+        {
+            LdocumentosEnum = documento.listdoc;
+        }
     }
 }

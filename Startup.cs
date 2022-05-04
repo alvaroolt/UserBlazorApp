@@ -39,6 +39,10 @@ namespace UserBlazorApp
             {
                 account.BaseAddress = new Uri("https://localhost:44327/"); //dirección de la API
             });
+            services.AddHttpClient<IServiceComprobarSiExisteMesa, ServiceComprobarSiExisteMesa>(comprobarSiExisteMesa =>
+            {
+                comprobarSiExisteMesa.BaseAddress = new Uri("https://localhost:44327");
+            });
             services.AddSyncfusionBlazor(); // agrega el servicio de Syncfusion para Blazor
         }
 
