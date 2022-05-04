@@ -6,7 +6,7 @@
 
 <div class="contenedorgridandmenubuttons">
     <div class="contenedorgrid">
-        <Grid Id="@selectedId"></Grid>
+        <Grid orden="26"></Grid>
     </div>
     <div class="contenedormenubuttons">
         <div class="container border">
@@ -50,6 +50,8 @@
 @*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="0" @onclick="e => botonClicado(0)">0</SfButton>
     <SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>*@
 
+<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="26" @onclick="e => botonClicado(26)">26</SfButton>
+
 @*llamamos al teclado numérico*@
 <Numpad></Numpad>
 
@@ -80,9 +82,11 @@
     //pasamos -1 para que no muestre ningún registro en el grid
     private int selectedId = -1;
 
-    private void botonClicado(int num)
+    private async void botonClicado(int num)
     {
         selectedId = num;
+
+        //await Grid.getDocumentos(selectedId);
     }
 
 }

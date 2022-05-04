@@ -1,18 +1,18 @@
 ﻿<div class="contenedornumpad">
     <div class="contenedorvisornumpad">
         <label for="visornumpad">Selección de mesa</label>
-        <input type="text" id="visornumpad" disabled />
+        <input type="text" id="visornumpad" value="@value" />
     </div>
     <div class="numpads">
         <div class="row justify-content-md-center rownumpad">
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">7</button>
+                <button class="numpadbutton" @onclick="e => addKey(7)">7</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">8</button>
+                <button class="numpadbutton" @onclick="e => addKey(8)">8</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">9</button>
+                <button class="numpadbutton" @onclick="e => addKey(9)">9</button>
             </div>
             <div class="col-auto colnumpad">
                 <button class="numpadlargebutton">S</button>
@@ -20,13 +20,13 @@
         </div>
         <div class="row justify-content-md-center rownumpad">
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">4</button>
+                <button class="numpadbutton" @onclick="e => addKey(4)">4</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">5</button>
+                <button class="numpadbutton" @onclick="e => addKey(5)">5</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">6</button>
+                <button class="numpadbutton" @onclick="e => addKey(6)">6</button>
             </div>
             <div class="col-auto colnumpad">
                 <button class="numpadlargebutton">PREC</button>
@@ -34,13 +34,13 @@
         </div>
         <div class="row justify-content-md-center rownumpad">
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">1</button>
+                <button class="numpadbutton" @onclick="e => addKey(1)">1</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">2</button>
+                <button class="numpadbutton" @onclick="e => addKey(2)">2</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">3</button>
+                <button class="numpadbutton" @onclick="e => addKey(3)">3</button>
             </div>
             <div class="col-auto colnumpad">
                 <button class="numpadlargebutton">A</button>
@@ -48,13 +48,13 @@
         </div>
         <div class="row justify-content-md-center rownumpad">
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">0</button>
+                <button class="numpadbutton" @onclick="e => addKey(0)">0</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">,</button>
+                <button class="numpadbutton" @onclick="e => addKey(-3)">,</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton">C</button>
+                <button class="numpadbutton" @onclick="e => addKey(-1)">C</button>
             </div>
             <div class="col-auto colnumpad">
                 <button class="numpadlargebutton">&#60;&#61;</button>
@@ -65,4 +65,52 @@
 
 @code {
 
+    private string value = "0";
+    string modelo = "";
+    InputText inputtext;
+
+    private void addKey(int key)
+    {
+        switch (key)
+        {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                if (value == "0")
+                {
+                    value = "";
+                }
+                value += key.ToString().Trim();
+                break;
+            case -1:
+                if (value.Length == 1)
+                {
+                    value = "0";
+                }
+                else if (value.Length > 0)
+                {
+                    string newvalue = "";
+                    newvalue = value.Remove(value.LastIndexOf("")).Trim();
+                    value = newvalue;
+                }
+                break;
+            case -2:
+                value = "0";
+                break;
+            case -3:
+                //agregar condición que impida más de un , en el string
+                if (value.Substring(value.Length - 1) != ",")
+                {
+                    value += ",";
+                }
+                break;
+        }
+    }
 }

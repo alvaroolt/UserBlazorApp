@@ -34,6 +34,5 @@ namespace UserBlazorApp.Services
 
             await httpClient.PostAsJsonAsync("api/user", _user);
         }
-
     }
 }
