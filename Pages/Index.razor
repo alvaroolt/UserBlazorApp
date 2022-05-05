@@ -1,12 +1,11 @@
 ﻿@*fichero raiz del proyecto*@
 @page "/"
-
 @*hacemos referencia a los componentes*@
 @using UserBlazorApp.components;
 
 <div class="contenedorgridandmenubuttons">
     <div class="contenedorgrid">
-        <Grid orden="selectedId"></Grid>
+        <Grid orden="numNumpad"></Grid>
     </div>
     <div class="contenedormenubuttons">
         <div class="container border">
@@ -50,10 +49,10 @@
 @*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="0" @onclick="e => botonClicado(0)">0</SfButton>
     <SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>*@
 
-<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="26" @onclick="e => botonClicado(26)">26</SfButton>
+@*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="26" @onclick="e => botonClicado(26)">26</SfButton>*@
 
 @*llamamos al teclado numérico*@
-<Numpad></Numpad>
+<Numpad OnClick="obtenerNum"></Numpad>
 
 <footer class="footer">
     <div class="col-auto contenedornavbutton">
@@ -78,15 +77,32 @@
 
 @code {
     Grid grid;
+    private int numNumpad;
 
     //pasamos -1 para que no muestre ningún registro en el grid
-    private int selectedId = -1;
+    public int selectedId { get; private set; } = -1;
+
+    //public event System.Action cambiarId;
+
+    //public void asignarId(int nuevoId)
+    //{
+    //    selectedId = nuevoId;
+    //    ExecuteAction();
+
+    //}
+
+    //private void ExecuteAction() => cambiarId?.Invoke();
 
     private async void botonClicado(int num)
     {
         selectedId = num;
 
         //await Grid.getDocumentos(selectedId);
+    }
+
+    private void obtenerNum(int num)
+    {
+        numNumpad = num;
     }
 
 }

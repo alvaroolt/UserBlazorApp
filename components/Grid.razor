@@ -11,10 +11,10 @@
         </EmptyRecordTemplate>
     </GridTemplates>
     <GridColumns>
-        <GridColumn Field="@(nameof(Ldocumentos.ldoc_cantidad))" />
-        <GridColumn Field="@(nameof(Ldocumentos.ldoc_descripcion))" />
-        <GridColumn Field="@(nameof(Ldocumentos.ldoc_importe_pvp))" />
-        <GridColumn Field="@(nameof(Ldocumentos.ldoc_importe))" />
+        <GridColumn Field="@(nameof(Ldocumentos.ldoc_cantidad))" AutoFit="true" />
+        <GridColumn Field="@(nameof(Ldocumentos.ldoc_descripcion))" Width="50%" />
+        <GridColumn Field="@(nameof(Ldocumentos.ldoc_importe_pvp))" TextAlign="TextAlign.Right" />
+        <GridColumn Field="@(nameof(Ldocumentos.ldoc_importe))" TextAlign="TextAlign.Right" />
     </GridColumns>
 </SfGrid>
 
@@ -28,7 +28,7 @@
     public IServiceComprobarSiExisteMesa ServiceComprobarSiExisteMesa { get; set; }
     public IEnumerable<Documentos> DocumentosEnum { get; set; }
     public IEnumerable<Ldocumentos> LdocumentosEnum { get; set; }
-    public IEnumerable<Documentos> SelectedDocumentos { get; set; }
+    //public IEnumerable<Documentos> SelectedDocumentos { get; set; }
 
     //[Parameter]
     //public int Id { get; set; }

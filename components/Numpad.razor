@@ -15,7 +15,7 @@
                 <button class="numpadbutton" @onclick="e => addKey(9)">9</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadlargebutton" @onclick="e => addKey(-2)">S</button>
+                <button class="numpadlargebutton" @onclick="@(() => OnClick.InvokeAsync(Int32.Parse(value)))">S</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
@@ -54,10 +54,10 @@
                 <button class="numpadbutton" @onclick="e => addKey(-3)">,</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(-1)">C</button>
+                <button class="numpadbutton" @onclick="e => addKey(-2)">C</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadlargebutton">&#60;&#61;</button>
+                <button class="numpadlargebutton" @onclick="e => addKey(-1)">&#60;&#61;</button>
             </div>
         </div>
     </div>
@@ -65,7 +65,10 @@
 
 @code {
 
-    private string value = "0";
+    [Parameter]
+    public EventCallback<int> OnClick { get; set; }
+
+    private string value = "";
     string modelo = "";
     InputText inputtext;
 
@@ -90,11 +93,7 @@
                 value += key.ToString().Trim();
                 break;
             case -1:
-                if (value.Length == 1)
-                {
-                    value = "0";
-                }
-                else if (value.Length > 0)
+                if (value.Length > 0)
                 {
                     string newvalue = "";
                     newvalue = value.Remove(value.LastIndexOf("")).Trim();
@@ -102,7 +101,7 @@
                 }
                 break;
             case -2:
-                value = "0";
+                value = "";
                 break;
             case -3:
                 //agregar condición que impida más de un , en el string
