@@ -1,8 +1,9 @@
-﻿@*@inherits ListUserBase*@
-@using WebServiceApiRest.Models
+﻿@using WebServiceApiRest.Models
 @using UserBlazorApp.Services;
+@inject BrowserService Service;
 
-<SfGrid DataSource="LdocumentosEnum">
+<SfGrid DataSource="ldocumento" Height="100%">
+    <GridPageSettings PageSize="1000"></GridPageSettings>
     <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" PersistSelection="true"></GridSelectionSettings>
     <GridEditSettings NewRowPosition="NewRowPosition.Bottom"></GridEditSettings>
     <GridTemplates>
@@ -10,66 +11,65 @@
             <span></span>
         </EmptyRecordTemplate>
     </GridTemplates>
+    <GridEvents RowSelected="RowSelectHandler" TValue="Ldocumentos"></GridEvents>
     <GridColumns>
         <GridColumn Field="@(nameof(Ldocumentos.ldoc_cantidad))" AutoFit="true" />
-        <GridColumn Field="@(nameof(Ldocumentos.ldoc_descripcion))" Width="50%" />
-        <GridColumn Field="@(nameof(Ldocumentos.ldoc_importe_pvp))" TextAlign="TextAlign.Right" />
-        <GridColumn Field="@(nameof(Ldocumentos.ldoc_importe))" TextAlign="TextAlign.Right" />
+        <GridColumn Field="@(nameof(Ldocumentos.ldoc_descripcion))" Width="90%" />
     </GridColumns>
 </SfGrid>
+@*<p>@height</p>
+<button @onclick="getHeight">Get Dimensions</button>*@
 
 @code {
-    //[Inject]
-    //public IServiceUser ServiceUser { get; set; }
-    //public IEnumerable<User> Users { get; set; }
-    //public IEnumerable<User> SelectedUsers { get; set; }
-
-    [Inject]
-    public IServiceComprobarSiExisteMesa ServiceComprobarSiExisteMesa { get; set; }
-    public IEnumerable<Documentos> DocumentosEnum { get; set; }
-    public IEnumerable<Ldocumentos> LdocumentosEnum { get; set; }
-    //public IEnumerable<Documentos> SelectedDocumentos { get; set; }
-
-    //[Parameter]
-    //public int Id { get; set; }
+    [Parameter]
+    public EventCallback<Ldocumentos> ldocumentoToIndex { get; set; }
 
     [Parameter]
-    public int orden { get; set; }
+    public IEnumerable<Documentos> documento { get; set; }
+    public IEnumerable<Ldocumentos> ldocumento { get; set; }
+
+    //private int height { get; set; }
+
+    //private async Task getHeight()
+    //{
+    //    var dimension = await Service.GetDimensions();
+    //    height = dimension.Height;
+    //}
 
     //protected override async Task OnInitializedAsync()
     //{
-
+    //    await getHeight();
     //}
 
-    //OnParametersSetAsync se ejecuta cada vez que se actualiza el estado del componente
+    //OnParametersSetAsync se ejecuta al iniciar el componente o cada vez que se actualiza su estado
     protected override async Task OnParametersSetAsync()
     {
-        //await getUsers(Id);
-        await getDocumentos(orden);
+        if (documento != null)
+        {
+            await getDocumentos(documento);
+        }
         await base.OnParametersSetAsync();
     }
 
-    //public async Task getUsers(int idCode)
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
     //{
-    //    if (Id == 0)
+    //    if (firstRender)
     //    {
-    //        //si el id es 0, obtiene la lista completa de usuarios
-    //        Users = (await ServiceUser.DameUsers()).ToList();
-    //    }
-    //    else
-    //    {
-    //        //si no, obtiene una lista de un único usuario según el id que recibe
-    //        Users = (await ServiceUser.DameUser(Id)).ToList();
+    //        await getHeight();
     //    }
     //}
 
-    public async Task getDocumentos(int ordenCode)
+    public async Task getDocumentos(IEnumerable<Documentos> documentoCode)
     {
-        //string file = ServiceComprobarSiExisteMesa.DameDocumentos(26).ToString();
-        DocumentosEnum = (await ServiceComprobarSiExisteMesa.DameDocumentos(ordenCode)).ToList();
-        foreach (var documento in DocumentosEnum)
+        foreach (var doc in documentoCode)
         {
-            LdocumentosEnum = documento.listdoc;
+            ldocumento = doc.listdoc;
         }
+    }
+
+    public void RowSelectHandler(RowSelectEventArgs<Ldocumentos> args)
+    {
+        var CustomerIDValue = args.Data;
+        ldocumentoToIndex.InvokeAsync(CustomerIDValue);
     }
 }

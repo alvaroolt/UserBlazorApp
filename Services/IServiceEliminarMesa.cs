@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WebServiceApiRest.Models;
-using WebServiceApiRest.Models.Response;
 
 namespace UserBlazorApp.Services
 {
-    public interface IServiceComprobarSiExisteMesa
+    public interface IServiceEliminarMesa
     {
-        Task<Respuesta> DameDocumentos(int orden);
+        Task BorrarMesa(int mesa);
     }
 }

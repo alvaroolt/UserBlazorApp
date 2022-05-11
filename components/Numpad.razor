@@ -1,4 +1,7 @@
-﻿<div class="contenedornumpad">
+﻿@using WebServiceApiRest.Models
+@using UserBlazorApp.Services;
+
+<div class="contenedornumpad">
     <div class="contenedorvisornumpad">
         <label for="visornumpad">Selección de mesa</label>
         <input type="text" id="visornumpad" value="@value" />
@@ -6,27 +9,28 @@
     <div class="numpads">
         <div class="row justify-content-md-center rownumpad">
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(7)">7</button>
+                <button class="numpadbutton" @onclick="e => typeKey(7)">7</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(8)">8</button>
+                <button class="numpadbutton" @onclick="e => typeKey(8)">8</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(9)">9</button>
+                <button class="numpadbutton" @onclick="e => typeKey(9)">9</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadlargebutton" @onclick="@(() => OnClick.InvokeAsync(Int32.Parse(value)))">S</button>
+                @* llamamos al evento callback numMesaToIndex, que se encarga de enviar los números tecleados (parseados a int en vez de string) *@
+                <button class="numpadlargebutton" @onclick="@(() => numMesaToIndex.InvokeAsync(Int32.Parse(value)))">S</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(4)">4</button>
+                <button class="numpadbutton" @onclick="e => typeKey(4)">4</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(5)">5</button>
+                <button class="numpadbutton" @onclick="e => typeKey(5)">5</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(6)">6</button>
+                <button class="numpadbutton" @onclick="e => typeKey(6)">6</button>
             </div>
             <div class="col-auto colnumpad">
                 <button class="numpadlargebutton">PREC</button>
@@ -34,13 +38,13 @@
         </div>
         <div class="row justify-content-md-center rownumpad">
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(1)">1</button>
+                <button class="numpadbutton" @onclick="e => typeKey(1)">1</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(2)">2</button>
+                <button class="numpadbutton" @onclick="e => typeKey(2)">2</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(3)">3</button>
+                <button class="numpadbutton" @onclick="e => typeKey(3)">3</button>
             </div>
             <div class="col-auto colnumpad">
                 <button class="numpadlargebutton">A</button>
@@ -48,31 +52,30 @@
         </div>
         <div class="row justify-content-md-center rownumpad">
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(0)">0</button>
+                <button class="numpadbutton" @onclick="e => typeKey(0)">0</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(-3)">,</button>
+                <button class="numpadbutton" @onclick="e => typeKey(-3)">,</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadbutton" @onclick="e => addKey(-2)">C</button>
+                <button class="numpadbutton" @onclick="e => typeKey(-2)">C</button>
             </div>
             <div class="col-auto colnumpad">
-                <button class="numpadlargebutton" @onclick="e => addKey(-1)">&#60;&#61;</button>
+                <button class="numpadlargebutton" @onclick="e => typeKey(-1)">&#60;&#61;</button>
             </div>
         </div>
     </div>
 </div>
 
 @code {
-
+    // parametro que se pasa al componente padre (index)
     [Parameter]
-    public EventCallback<int> OnClick { get; set; }
+    public EventCallback<int> numMesaToIndex { get; set; }
 
+    // variable que almacena el número que se escribe con los botones de numpad
     private string value = "";
-    string modelo = "";
-    InputText inputtext;
 
-    private void addKey(int key)
+    private void typeKey(int key)
     {
         switch (key)
         {

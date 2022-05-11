@@ -18,6 +18,7 @@
 .contenedorgrid {
     background-color: lightgray;
     width: 60%;
+    max-height: 331px;
 }
 
 .visorprecio {
@@ -32,6 +33,7 @@
 
 .contenedormenubuttons {
     width: 40%;
+    height: fit-content;
 }
 
 .rowmenubuttons {
@@ -178,7 +180,17 @@
     border-radius: 10px;
 }
 
+@media (max-width: 360px) {
+    .contenedorgrid {
+        max-height: 535px;
+    }
+}
+
 @media (min-width: 700px) and (max-width: 999px) {
+    .contenedorgrid {
+        max-height: 358px;
+    }
+
     .contenedorvisornumpad label {
         font-size: 35px;
     }
@@ -219,6 +231,9 @@
 }
 
 @media (min-width: 1000px) {
+    .contenedorgrid {
+        max-height: 401px;
+    }
 
     .visorprecio {
         font-size: 35px;
@@ -238,9 +253,9 @@
         font-size: 20px;
     }
 
-    .menubutton img {
-        width: 55px;
-    }
+        .menubutton img {
+            width: 55px;
+        }
 
     .categorybutton {
         width: 130px !important;

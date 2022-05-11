@@ -6,9 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Http;
 using UserBlazorApp.Services;
 using Syncfusion.Blazor;
 
@@ -29,19 +27,28 @@ namespace UserBlazorApp
         {
             services.AddRazorPages(); // agrega servicios MVC para páginas al IServiceCollection especificado. https://docs.microsoft.com/es-es/dotnet/api/microsoft.extensions.dependencyinjection.mvcservicecollectionextensions.addrazorpages?view=aspnetcore-6.0
             services.AddServerSideBlazor(); // agrega server-side blazor a la colección de servicios
+            services.AddScoped<BrowserService>();
 
             // AddHttpClient permite enviar solicitudes y recibir respuestas HTTP de un recurso identificado por un URI.
-            services.AddHttpClient<IServiceUser, ServiceUser>(user =>
+            //services.AddHttpClient<IServiceUser, ServiceUser>(user =>
+            //{
+            //    user.BaseAddress = new Uri("https://localhost:44327/"); //dirección de la API
+            //});
+            //services.AddHttpClient<IServiceAccount, ServiceAccount>(account =>
+            //{
+            //    account.BaseAddress = new Uri("https://localhost:44327/"); //dirección de la API
+            //});
+            //services.AddHttpClient<IServiceComprobarSiExisteMesa, ServiceComprobarSiExisteMesa>(comprobarSiExisteMesa =>
+            //{
+            //    comprobarSiExisteMesa.BaseAddress = new Uri("https://localhost:44327");
+            //});
+            //services.AddHttpClient<IServiceEliminarMesa, ServiceEliminarMesa>(eliminarMesa =>
+            //{
+            //    eliminarMesa.BaseAddress = new Uri("https://localhost:44327");
+            //});
+            services.AddSingleton(new HttpClient
             {
-                user.BaseAddress = new Uri("https://localhost:44327/"); //dirección de la API
-            });
-            services.AddHttpClient<IServiceAccount, ServiceAccount>(account =>
-            {
-                account.BaseAddress = new Uri("https://localhost:44327/"); //dirección de la API
-            });
-            services.AddHttpClient<IServiceComprobarSiExisteMesa, ServiceComprobarSiExisteMesa>(comprobarSiExisteMesa =>
-            {
-                comprobarSiExisteMesa.BaseAddress = new Uri("https://localhost:44327");
+                BaseAddress = new Uri("https://localhost:44322")
             });
             services.AddSyncfusionBlazor(); // agrega el servicio de Syncfusion para Blazor
         }

@@ -2,17 +2,26 @@
 @page "/"
 @*hacemos referencia a los componentes*@
 @using UserBlazorApp.components;
+@using WebServiceApiRest.Models;
+@using WebServiceApiRest.Models.Response;
+@using UserBlazorApp.Services;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@inject HttpClient Http
+@inject IJSRuntime JsRuntime;
 
 <div class="contenedorgridandmenubuttons">
     <div class="contenedorgrid">
-        <Grid orden="numNumpad"></Grid>
+        @*<Grid documento="DocumentosEnum" ldocumentoToIndex="obtenerLdocumentoFromGrid"></Grid>*@
+        <Grid documento="DocumentosEnum"></Grid>
     </div>
     <div class="contenedormenubuttons">
         <div class="container border">
-            <p class="visorprecio">0.00€</p>
+            <p class="visorprecio">@precioTotal€</p>
             <div class="row justify-content-md-center rowmenubuttons">
                 <div class="col-auto colmenubutton">
-                    <button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button> @*evitar el ~/*@
+                    @*<button class="menubutton" @onclick="e => deleteDocumento(numMesa)"><img class="menuimg" src="images/deleteLine.png" /></button>*@ @*evitar el ~/*@
+                    <button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button>
                 </div>
                 <div class="col-auto colmenubutton">
                     <button class="menubutton">Boton</button>
@@ -42,17 +51,17 @@
         </div>
     </div>
 </div>
+@*@if (ldocumentoFromGrid != null)
+    {
+        <p>@ldocumentoFromGrid.ldoc_id</p>
+    }*@
 @*<div class="contenedorlistbuttons">
         <ListButtonUsers></ListButtonUsers>
     </div>*@
 @*<ListButton></ListButton>*@
-@*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="0" @onclick="e => botonClicado(0)">0</SfButton>
-    <SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="40" @onclick="e => botonClicado(40)">40</SfButton>*@
-
-@*<SfButton type="button" href='#' class="btn btn-primary btn-square-md" name="26" @onclick="e => botonClicado(26)">26</SfButton>*@
 
 @*llamamos al teclado numérico*@
-<Numpad OnClick="obtenerNum"></Numpad>
+<Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
 
 <footer class="footer">
     <div class="col-auto contenedornavbutton">
@@ -76,33 +85,66 @@
 </footer>
 
 @code {
+    public string Url = "https://localhost:44322/api/Mesa";
+    public Respuesta oRespuesta = new Respuesta();
+
     Grid grid;
-    private int numNumpad;
+    //variable en la que se almacena el número de mesa que obtenemos de Numpad
+    private int numMesa;
+    //línea de documento (artículo) que recibimos del componente grid
+    Ldocumentos ldocumentoFromGrid;
+    //lista de artículos correspondiente a la mesa
+    public IEnumerable<Documentos> DocumentosEnum { get; set; }
+    //precio total de los artículos de la mesa
+    private double precioTotal = 0;
 
-    //pasamos -1 para que no muestre ningún registro en el grid
-    public int selectedId { get; private set; } = -1;
+    protected override async void OnAfterRender(bool firstRender)
+    {
+       var x = JsRuntime.InvokeVoidAsync("elementId");
+    }
 
-    //public event System.Action cambiarId;
 
-    //public void asignarId(int nuevoId)
+    private async void obtenerNumMesa(int num)
+    {
+        //almacenamos en numMesa el valor recibido en num, el cual Index recibe de Numpad
+        numMesa = num;
+        await getDocumentos();
+        await getPrecio();
+        //necesario para que el componente grid sepa que el objeto que recibe como parámetro ha cambiado y así actualizarse
+        StateHasChanged();
+    }
+
+    //obtiene la lista con todos los artículos de la mesa
+    public async Task getDocumentos()
+    {
+        //almacenamos en oRespuesta la respuesta que recibimos de la api
+        oRespuesta = await Http.GetFromJsonAsync<Respuesta>(Url + "/" + numMesa);
+        //almacenamos los datos de la respuesta en DocumentosEnum
+        DocumentosEnum = (IEnumerable<Documentos>)oRespuesta.Data;
+    }
+
+    //public async Task deleteDocumento(int mesaCode)
     //{
-    //    selectedId = nuevoId;
-    //    ExecuteAction();
-
+    //    bool confirmar = await JsRuntime.InvokeAsync<bool>("confirm", "¿Estás seguro?");
+    //    if (confirmar)
+    //    {
+    //        await ServiceEliminarMesa.BorrarMesa(numMesa);
+    //    }
     //}
 
-    //private void ExecuteAction() => cambiarId?.Invoke();
-
-    private async void botonClicado(int num)
+    private async Task getPrecio()
     {
-        selectedId = num;
-
-        //await Grid.getDocumentos(selectedId);
+        //obtenemos el precio total de la mesa solo si hubo éxito en la respuesta y hay datos en ella
+        if (oRespuesta.Exito == 1 && oRespuesta.Data != null)
+        {
+            precioTotal = oRespuesta.Data[0].doc_total;
+            precioTotal = Math.Round(precioTotal, 2);
+        }
     }
 
-    private void obtenerNum(int num)
-    {
-        numNumpad = num;
-    }
+    //void obtenerLdocumentoFromGrid(Ldocumentos ldocumento)
+    //{
+    //    ldocumentoFromGrid = ldocumento;
+    //}
 
 }
