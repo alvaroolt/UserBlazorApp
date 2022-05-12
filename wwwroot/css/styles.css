@@ -11,6 +11,10 @@
     flex-direction: column;
 }
 
+.e-gridcontent {
+    /*height: 10px !important;*/
+}
+
 .contenedorgridandmenubuttons {
     display: flex;
 }
@@ -137,6 +141,7 @@
     margin: 0 auto;
     padding: 1%;
     border: 1px solid black;
+    width: 90%;
 }
 
 .contenedorvisornumpad {
@@ -163,7 +168,7 @@
 }
 
 .colnumpad {
-    margin: 3% 0;
+    margin: 3% 1%;
 }
 
 .numpadbutton {
@@ -182,7 +187,7 @@
 
 @media (max-width: 360px) {
     .contenedorgrid {
-        max-height: 535px;
+        max-height: 53px;
     }
 }
 
@@ -200,11 +205,12 @@
     }
 
     .contenedornumpad {
+        width: 75%;
         padding-top: 1%;
     }
 
     .colnumpad {
-        margin: 1% 0;
+        margin: 1%;
     }
 
     .numpadbutton {
@@ -252,10 +258,10 @@
         height: 80px;
         font-size: 20px;
     }
-
-        .menubutton img {
-            width: 55px;
-        }
+    
+    .menubutton img {
+        width: 55px;
+     }
 
     .categorybutton {
         width: 130px !important;
@@ -290,11 +296,12 @@
     }
 
     .contenedornumpad {
+        width: 65%;
         padding-top: 1%;
     }
 
     .colnumpad {
-        margin: 1% 0;
+        margin: 1% 1%;
     }
 
     .numpadbutton {

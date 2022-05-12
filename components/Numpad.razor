@@ -8,59 +8,59 @@
     </div>
     <div class="numpads">
         <div class="row justify-content-md-center rownumpad">
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(7)">7</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(8)">8</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(9)">9</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 @* llamamos al evento callback numMesaToIndex, que se encarga de enviar los números tecleados (parseados a int en vez de string) *@
                 <button class="numpadlargebutton" @onclick="@(() => numMesaToIndex.InvokeAsync(Int32.Parse(value)))">S</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(4)">4</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(5)">5</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(6)">6</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadlargebutton">PREC</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(1)">1</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(2)">2</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(3)">3</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadlargebutton">A</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(0)">0</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(-3)">,</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadbutton" @onclick="e => typeKey(-2)">C</button>
             </div>
-            <div class="col-auto colnumpad">
+            <div class="colnumpad">
                 <button class="numpadlargebutton" @onclick="e => typeKey(-1)">&#60;&#61;</button>
             </div>
         </div>

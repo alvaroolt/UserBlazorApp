@@ -98,12 +98,6 @@
     //precio total de los artículos de la mesa
     private double precioTotal = 0;
 
-    protected override async void OnAfterRender(bool firstRender)
-    {
-       var x = JsRuntime.InvokeVoidAsync("elementId");
-    }
-
-
     private async void obtenerNumMesa(int num)
     {
         //almacenamos en numMesa el valor recibido en num, el cual Index recibe de Numpad
@@ -146,5 +140,4 @@
     //{
     //    ldocumentoFromGrid = ldocumento;
     //}
-
 }
