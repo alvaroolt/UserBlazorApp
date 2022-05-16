@@ -4,11 +4,9 @@
 @using UserBlazorApp.components;
 @using WebServiceApiRest.Models;
 @using WebServiceApiRest.Models.Response;
-@using UserBlazorApp.Services;
 @using System.Net.Http;
 @using System.Net.Http.Json;
 @inject HttpClient Http
-@inject IJSRuntime JsRuntime;
 
 <div class="contenedorgridandmenubuttons">
     <div class="contenedorgrid">
@@ -55,13 +53,14 @@
     {
         <p>@ldocumentoFromGrid.ldoc_id</p>
     }*@
-@*<div class="contenedorlistbuttons">
-        <ListButtonUsers></ListButtonUsers>
-    </div>*@
 @*<ListButton></ListButton>*@
 
 @*llamamos al teclado numérico*@
 <Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
+@*<ListButtonCategorias></ListButtonCategorias>*@
+@*<p>@continueFromSon</p>
+<DialogContinueOperation continueToFather="obtenerSiContinue" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinueOperation>*@
+@*<DialogInfo headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>*@
 
 <footer class="footer">
     <div class="col-auto contenedornavbutton">
@@ -85,9 +84,13 @@
 </footer>
 
 @code {
-    public string Url = "https://localhost:44322/api/Mesa";
-    public Respuesta oRespuesta = new Respuesta();
+    // url que apunta a la api
+    public string Url = "https://localhost:44322";
 
+    // respuesta recibe si ha habido éxito en la solicitud, mensaje si fuese necesario y los datos solicitados
+    Respuesta<List<Documentos>> oRespuestaDocumentos = new Respuesta<List<Documentos>>();
+
+    // rendija/tabla en la que se muestran los artículos
     Grid grid;
     //variable en la que se almacena el número de mesa que obtenemos de Numpad
     private int numMesa;
@@ -97,6 +100,19 @@
     public IEnumerable<Documentos> DocumentosEnum { get; set; }
     //precio total de los artículos de la mesa
     private double precioTotal = 0;
+    private bool isDialogVisible { get; set; } = true;
+
+    // variable mensaje del popup (body)
+    private string mensaje = "bien!";
+    // variable mensaje del popup (header)
+    private string headerMensaje = "Éxito";
+    // boolean que recibe index del componente dialog para saber si continuar con la operación
+    private bool continueFromSon;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+
+    //}
 
     private async void obtenerNumMesa(int num)
     {
@@ -112,9 +128,9 @@
     public async Task getDocumentos()
     {
         //almacenamos en oRespuesta la respuesta que recibimos de la api
-        oRespuesta = await Http.GetFromJsonAsync<Respuesta>(Url + "/" + numMesa);
+        oRespuestaDocumentos = await Http.GetFromJsonAsync<Respuesta<List<Documentos>>>(Url + "/api/Mesa/" + numMesa);
         //almacenamos los datos de la respuesta en DocumentosEnum
-        DocumentosEnum = (IEnumerable<Documentos>)oRespuesta.Data;
+        DocumentosEnum = (IEnumerable<Documentos>)oRespuestaDocumentos.Data;
     }
 
     //public async Task deleteDocumento(int mesaCode)
@@ -129,9 +145,9 @@
     private async Task getPrecio()
     {
         //obtenemos el precio total de la mesa solo si hubo éxito en la respuesta y hay datos en ella
-        if (oRespuesta.Exito == 1 && oRespuesta.Data != null)
+        if (oRespuestaDocumentos.Exito == 1 && oRespuestaDocumentos.Data != null)
         {
-            precioTotal = oRespuesta.Data[0].doc_total;
+            precioTotal = oRespuestaDocumentos.Data[0].doc_total;
             precioTotal = Math.Round(precioTotal, 2);
         }
     }
@@ -140,4 +156,12 @@
     //{
     //    ldocumentoFromGrid = ldocumento;
     //}
+
+    // variable que obtiene información de dialog (boolean para continuar o no)
+    private async void obtenerSiContinue(bool x)
+    {
+        //almacenamos en numMesa el valor recibido en num, el cual Index recibe de Numpad
+        continueFromSon = x;
+        StateHasChanged();
+    }
 }

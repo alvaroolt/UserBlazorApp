@@ -11,10 +11,6 @@
     flex-direction: column;
 }
 
-.e-gridcontent {
-    /*height: 10px !important;*/
-}
-
 .contenedorgridandmenubuttons {
     display: flex;
 }
@@ -69,12 +65,9 @@
 }
 
 .contenedorlistbuttons {
-    height: 465px;
-    overflow-y: scroll;
-    margin: 0 !important;
     display: flex;
     flex-wrap: wrap;
-    margin: 2% 0 !important;
+    justify-content: flex-start;
 }
 
 .collistbutton {
@@ -85,14 +78,11 @@
 
 .listbutton {
     border-radius: 5px;
-    font-size: 13px;
-    padding: 5% !important;
+    font-size: 11px;
     margin: 0 2%;
     padding: 0 2% !important;
-    text-align: center;
-    width: 86px;
+    width: 89px;
     height: 86px;
-    white-space: normal;
 }
 
 .footer {
@@ -268,9 +258,9 @@
     }
 
     .listbutton {
-        width: 140px;
+        /*width: 140px;
         height: 140px;
-        font-size: 23px;
+        font-size: 23px;*/
     }
 
     .footer {

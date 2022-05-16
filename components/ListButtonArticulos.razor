@@ -1,0 +1,55 @@
+﻿@*<h3>ListButtonCategorias</h3>*@
+
+@using UserBlazorApp.components;
+@using WebServiceApiRest.Models;
+@using WebServiceApiRest.Models.Response;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@inject HttpClient Http
+
+@if (ArticulosEnum == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="contenedorlistbuttons">
+        @foreach (Articulos art in ArticulosEnum)
+        {
+            string nombre;
+            if (art.art_nom_corto.Length == 0)
+            {
+                nombre = art.art_nom_largo;
+            }
+            else
+            {
+                nombre = art.art_nom_corto; ;
+            }
+            <div class="collistbutton">
+                <button class="listbutton" type="button" href="#" name="@art.art_id">@nombre</button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int numFam { get; set; }
+
+    public string Url = "https://localhost:44322";
+    Respuesta<List<Articulos>> oRespuestaArticulos = new Respuesta<List<Articulos>>();
+
+    public IEnumerable<Articulos> ArticulosEnum { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await getArticulos();
+        await base.OnParametersSetAsync();
+    }
+
+    public async Task getArticulos()
+    {
+        oRespuestaArticulos = await Http.GetFromJsonAsync<Respuesta<List<Articulos>>>(Url + "/api/Articulos/" + numFam);
+        ArticulosEnum = (IEnumerable<Articulos>)oRespuestaArticulos.Data;
+    }
+}

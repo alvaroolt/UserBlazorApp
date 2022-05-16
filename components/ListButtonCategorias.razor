@@ -1,0 +1,61 @@
+﻿@*<h3>ListButtonCategorias</h3>*@
+
+@using UserBlazorApp.components;
+@using WebServiceApiRest.Models;
+@using WebServiceApiRest.Models.Response;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@inject HttpClient Http
+@if (_isVisible)
+{
+    @if (CategoriasEnum == null)
+    {
+        <p>Cargando...</p>
+    }
+    else
+    {
+        <div class="contenedorlistbuttons">
+            @foreach (Familias_art fam in CategoriasEnum)
+            {
+                <div class="collistbutton">
+                    <button class="listbutton" type="button" href="#" name="@fam.fam_id" @onclick="e => showAccounts(fam.fam_id)">@fam.fam_nom</button>
+                </div>
+            }
+        </div>
+    }
+}
+
+<ListButtonArticulos @ref="listcategories" numFam="@numFam"></ListButtonArticulos>
+
+@code {
+    public string Url = "https://localhost:44322";
+    Respuesta<List<Familias_art>> oRespuestaCategorias = new Respuesta<List<Familias_art>>();
+
+    public IEnumerable<Familias_art> CategoriasEnum { get; set; }
+
+    private bool _isVisible = true;
+    private int numFam;
+    ListButtonArticulos listcategories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await getCategorias();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+    }
+
+    public async Task getCategorias()
+    {
+        oRespuestaCategorias = await Http.GetFromJsonAsync<Respuesta<List<Familias_art>>>(Url + "/api/Familias_art");
+        CategoriasEnum = (IEnumerable<Familias_art>)oRespuestaCategorias.Data;
+    }
+
+    private void showAccounts(int num)
+    {
+        _isVisible = !_isVisible;
+        numFam = num;
+    }
+}

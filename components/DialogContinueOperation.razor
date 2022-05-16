@@ -1,0 +1,53 @@
+﻿@using Syncfusion.Blazor.Popups
+
+<SfDialog MinHeight="180px" Width="350px" @bind-Visible="@isDialogVisible" IsModal="true">
+    <DialogTemplates>
+        <Header>
+            @headerMensaje
+        </Header>
+        <Content>
+            @mensaje
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Cancelar" OnClick="(() => OnDialogBtnClick(false))" />
+        <DialogButton Content="Continuar" OnClick="(() => OnDialogBtnClick(true))" />
+    </DialogButtons>
+</SfDialog>
+<SfButton @onclick="@OnOpenBtnClick">Open Dialog</SfButton>
+
+@code {
+    //dialogContinueOperation recibe el parámetro headerMensaje, el cual es un string para escribir en el header del dialog
+    [Parameter]
+    public string headerMensaje { get; set; }
+    //dialogComponent recibe el parámetro mensaje, el cual es un string para escribir en el body del dialog
+    [Parameter]
+    public string mensaje { get; set; }
+    // info que se le pasa al componente padre (en este caso un boolean para continuar con la operación)
+    [Parameter]
+    public EventCallback<bool> continueToFather { get; set; }
+    // asigna como valor inicial el si es visible en true
+    private bool isDialogVisible { get; set; } = true;
+
+    // método que le asigna a isDialogVisible el valor false
+    private void OnDialogBtnClick(bool continueTask)
+    {
+        // continueTask devuelve true o false y se lo asigna a continueToFather, para pasar el dato al componente padre
+        if (continueTask)
+        {
+            continueToFather.InvokeAsync(bool.Parse("true"));
+        }
+        else
+        {
+            continueToFather.InvokeAsync(bool.Parse("false"));
+        }
+        // oculta dialog
+        isDialogVisible = false;
+    }
+
+    // método para establecer el dialog como visible y que así aparezca
+    private void OnOpenBtnClick()
+    {
+        isDialogVisible = true;
+    }
+}
