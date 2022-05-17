@@ -180,6 +180,29 @@ table {
     border-radius: 10px;
 }
 
+.formLogin {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.rownumpadLogin {
+    justify-content: center;
+}
+
+.formSelectLoginConfirm {
+    text-align: center;
+}
+
+.formButtonLoginConfirm {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.buttonLoginConfirm {
+    background-color: lightgreen;
+    border-radius: 15px;
+}
+
 @media (max-width: 360px) {
     .contenedorgrid {
         max-height: 53px;
@@ -229,6 +252,11 @@ table {
     .visormesa {
         font-size: 20px;
     }
+
+    .formLogin {
+        margin-top: 20px;
+        font-size: 28px;
+    }
 }
 
 @media (min-width: 1000px) {
@@ -253,10 +281,10 @@ table {
         height: 80px;
         font-size: 20px;
     }
-    
-    .menubutton img {
-        width: 55px;
-     }
+
+        .menubutton img {
+            width: 55px;
+        }
 
     .categorybutton {
         width: 130px !important;
@@ -309,5 +337,10 @@ table {
         width: 230px;
         height: 120px;
         font-size: 75px;
+    }
+
+    .formLogin {
+        margin-top: 20px;
+        font-size: 35px;
     }
 }

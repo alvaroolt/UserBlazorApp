@@ -8,90 +8,97 @@
 @using System.Net.Http.Json;
 @inject HttpClient Http
 
-<div class="contenedorgridandmenubuttons">
-    <div class="contenedorgrid">
-        @*<Grid documento="DocumentosEnum" ldocumentoToIndex="obtenerLdocumentoFromGrid"></Grid>*@
-        <Grid documento="DocumentosEnum"></Grid>
-    </div>
-    <div class="contenedormenubuttons">
-        <div class="container border">
-            <p class="visorprecio">@precioTotal€</p>
-            <div class="row justify-content-md-center rowmenubuttons">
-                <div class="col-auto colmenubutton">
-                    @*<button class="menubutton" @onclick="e => deleteDocumento(numMesa)"><img class="menuimg" src="images/deleteLine.png" /></button>*@ @*evitar el ~/*@
-                    <button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button>
+@if (1 == 0)
+{
+    <div class="contenedorgridandmenubuttons">
+        <div class="contenedorgrid">
+            @*<Grid documento="DocumentosEnum" ldocumentoToIndex="obtenerLdocumentoFromGrid"></Grid>*@
+            <Grid documento="DocumentosEnum"></Grid>
+        </div>
+        <div class="contenedormenubuttons">
+            <div class="container border">
+                <p class="visorprecio">@precioTotal€</p>
+                <div class="row justify-content-md-center rowmenubuttons">
+                    <div class="col-auto colmenubutton">
+                        @*<button class="menubutton" @onclick="e => deleteDocumento(numMesa)"><img class="menuimg" src="images/deleteLine.png" /></button>*@ @*evitar el ~/*@
+                        <button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button>
+                    </div>
+                    <div class="col-auto colmenubutton">
+                        <button class="menubutton">Boton</button>
+                    </div>
                 </div>
-                <div class="col-auto colmenubutton">
-                    <button class="menubutton">Boton</button>
+                <div class="row justify-content-md-center rowmenubuttons">
+                    <div class="col-auto colmenubutton">
+                        <button class="menubutton">Boton</button>
+                    </div>
+                    <div class="col-auto colmenubutton">
+                        <button class="menubutton">Boton</button>
+                    </div>
                 </div>
-            </div>
-            <div class="row justify-content-md-center rowmenubuttons">
-                <div class="col-auto colmenubutton">
-                    <button class="menubutton">Boton</button>
+                <div class="row justify-content-md-center rowmenubuttons">
+                    <div class="col-auto colmenubutton">
+                        <button class="menubutton">Boton</button>
+                    </div>
+                    <div class="col-auto colmenubutton">
+                        <button class="menubutton">Boton</button>
+                    </div>
                 </div>
-                <div class="col-auto colmenubutton">
-                    <button class="menubutton">Boton</button>
-                </div>
-            </div>
-            <div class="row justify-content-md-center rowmenubuttons">
-                <div class="col-auto colmenubutton">
-                    <button class="menubutton">Boton</button>
-                </div>
-                <div class="col-auto colmenubutton">
-                    <button class="menubutton">Boton</button>
-                </div>
-            </div>
-            <div class="row justify-content-md-center rowmenubuttons">
-                <div class="col-auto">
-                    <button @onclick="checkButtonCategoriasClicked" class="menubutton categorybutton">Categorías</button>
-                    @*<button class="menubutton categorybutton">Categorías</button>*@
+                <div class="row justify-content-md-center rowmenubuttons">
+                    <div class="col-auto">
+                        <button @onclick="checkButtonCategoriasClicked" class="menubutton categorybutton">Categorías</button>
+                        @*<button class="menubutton categorybutton">Categorías</button>*@
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@*@if (ldocumentoFromGrid != null)
+    @*@if (ldocumentoFromGrid != null)
+        {
+            <p>@ldocumentoFromGrid.ldoc_id</p>
+        }*@
+    @*<ListButton></ListButton>*@
+
+    @*llamamos al teclado numérico*@
+
+    @*@if (numMesa != 0 || categoriasClicked)*@
+    @if (numMesa != 0)
     {
-        <p>@ldocumentoFromGrid.ldoc_id</p>
-    }*@
-@*<ListButton></ListButton>*@
+        <ListButtonCategorias buttonCategoriasClicked="@isButtonCategoriasClicked"></ListButtonCategorias>
+    }
+    else
+    {
+        <Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
+    }
 
-@*llamamos al teclado numérico*@
+    @*<p>@continueFromSon</p>
+        <DialogContinueOperation continueToFather="obtenerSiContinue" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinueOperation>*@
+    <DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>
 
-@*@if (numMesa != 0 || categoriasClicked)*@
-@if (numMesa != 0)
-{
-<ListButtonCategorias buttonCategoriasClicked="@isButtonCategoriasClicked"></ListButtonCategorias>
+    <footer class="footer">
+        <div class="col-auto contenedornavbutton">
+            <button class="btn btn-primary p-4 rounded-0 navbutton">Salir</button>
+        </div>
+        <div class="col-auto contenedornavbutton">
+            <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+        </div>
+        <div class="col-auto contenedornavbutton">
+            <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+        </div>
+        <div class="col-auto contenedornavbutton">
+            <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+        </div>
+        <div class="col-auto contenedornavbutton">
+            <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+        </div>
+        <div class="col-auto contenedornavbutton">
+            <p class="visormesa">Mesa nº @numMesa</p>
+        </div>
+    </footer>
 }
 else
 {
-    <Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
+    <Login></Login>
 }
-
-@*<p>@continueFromSon</p>
-    <DialogContinueOperation continueToFather="obtenerSiContinue" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinueOperation>*@
-<DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>
-
-<footer class="footer">
-    <div class="col-auto contenedornavbutton">
-        <button class="btn btn-primary p-4 rounded-0 navbutton">Salir</button>
-    </div>
-    <div class="col-auto contenedornavbutton">
-        <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
-    </div>
-    <div class="col-auto contenedornavbutton">
-        <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
-    </div>
-    <div class="col-auto contenedornavbutton">
-        <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
-    </div>
-    <div class="col-auto contenedornavbutton">
-        <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
-    </div>
-    <div class="col-auto contenedornavbutton">
-        <p class="visormesa">Mesa nº @numMesa</p>
-    </div>
-</footer>
 
 @code {
     // url que apunta a la api
