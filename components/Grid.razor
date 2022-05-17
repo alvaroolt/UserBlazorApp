@@ -15,8 +15,6 @@
         <GridColumn Field="@(nameof(Ldocumentos.ldoc_descripcion))" Width="90%" />
     </GridColumns>
 </SfGrid>
-@*<p>@height</p>
-<button @onclick="getHeight">Get Dimensions</button>*@
 
 @code {
     [Parameter]
@@ -26,14 +24,6 @@
     public IEnumerable<Documentos> documento { get; set; }
     public IEnumerable<Ldocumentos> ldocumento { get; set; }
 
-    //private int height { get; set; }
-
-    //private async Task getHeight()
-    //{
-    //    var dimension = await Service.GetDimensions();
-    //    height = dimension.Height;
-    //}
-
     //protected override async Task OnInitializedAsync()
     //{
     //    await getHeight();
@@ -42,27 +32,35 @@
     //OnParametersSetAsync se ejecuta al iniciar el componente o cada vez que se actualiza su estado
     protected override async Task OnParametersSetAsync()
     {
+        // si el documento no está vacío, obtiene cada línea del documento
         if (documento != null)
         {
             await getDocumentos(documento);
         }
+        else
+        {
+            // si el documento está vacío, obtiene las líneas de un objeto vacío con la intención de "limpiar" el grid
+            await getDocumentos(null);
+        }
         await base.OnParametersSetAsync();
     }
 
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        await getHeight();
-    //    }
-    //}
-
     public async Task getDocumentos(IEnumerable<Documentos> documentoCode)
     {
-        foreach (var doc in documentoCode)
+        // si el argumento que recibe el método no está vacío, lo recorre para asignar los datos a ldocumento
+        if (documentoCode != null)
         {
-            ldocumento = doc.listdoc;
+            foreach (var doc in documentoCode)
+            {
+                ldocumento = doc.listdoc;
+            }
+        } else
+        {
+            // si getDocumentos ha recibido un argumento vacío, asigna a documento y a las líneas un valor nulo
+            ldocumento = null;
+            documento = null;
         }
+
     }
 
     public void RowSelectHandler(RowSelectEventArgs<Ldocumentos> args)

@@ -4,6 +4,11 @@
     padding: 0 !important;
 }
 
+/* el componente grid se descuadra al declarar un script en el head de _Host.cshtml. El css aplicado a table lo arregla */
+table {
+    width: 100% !important;
+}
+
 /* contenedor padre de los componentes de la página index*/
 .padreindex {
     height: 100vh;

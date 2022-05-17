@@ -43,7 +43,8 @@
             </div>
             <div class="row justify-content-md-center rowmenubuttons">
                 <div class="col-auto">
-                    <button class="menubutton categorybutton">Categorías</button>
+                    <button @onclick="checkButtonCategoriasClicked" class="menubutton categorybutton">Categorías</button>
+                    @*<button class="menubutton categorybutton">Categorías</button>*@
                 </div>
             </div>
         </div>
@@ -56,11 +57,20 @@
 @*<ListButton></ListButton>*@
 
 @*llamamos al teclado numérico*@
-<Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
-@*<ListButtonCategorias></ListButtonCategorias>*@
+
+@*@if (numMesa != 0 || categoriasClicked)*@
+@if (numMesa != 0)
+{
+<ListButtonCategorias buttonCategoriasClicked="@isButtonCategoriasClicked"></ListButtonCategorias>
+}
+else
+{
+    <Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
+}
+
 @*<p>@continueFromSon</p>
-<DialogContinueOperation continueToFather="obtenerSiContinue" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinueOperation>*@
-@*<DialogInfo headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>*@
+    <DialogContinueOperation continueToFather="obtenerSiContinue" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinueOperation>*@
+<DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>
 
 <footer class="footer">
     <div class="col-auto contenedornavbutton">
@@ -79,7 +89,7 @@
         <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
     </div>
     <div class="col-auto contenedornavbutton">
-        <p class="visormesa">Mesa nºX</p>
+        <p class="visormesa">Mesa nº @numMesa</p>
     </div>
 </footer>
 
@@ -100,18 +110,23 @@
     public IEnumerable<Documentos> DocumentosEnum { get; set; }
     //precio total de los artículos de la mesa
     private double precioTotal = 0;
-    private bool isDialogVisible { get; set; } = true;
+    // declara el valor visible del componente dialog en false
+    private bool isDialogInfoVisible = false;
+    // boolean que controla la visibilidad de las categorías
+    private bool isButtonCategoriasClicked = false;
+
+    //private bool categoriasClicked = false;
 
     // variable mensaje del popup (body)
-    private string mensaje = "bien!";
+    private string mensaje = "";
     // variable mensaje del popup (header)
-    private string headerMensaje = "Éxito";
+    private string headerMensaje = "";
     // boolean que recibe index del componente dialog para saber si continuar con la operación
     private bool continueFromSon;
 
     //protected override async Task OnInitializedAsync()
     //{
-
+    //
     //}
 
     private async void obtenerNumMesa(int num)
@@ -129,8 +144,29 @@
     {
         //almacenamos en oRespuesta la respuesta que recibimos de la api
         oRespuestaDocumentos = await Http.GetFromJsonAsync<Respuesta<List<Documentos>>>(Url + "/api/Mesa/" + numMesa);
-        //almacenamos los datos de la respuesta en DocumentosEnum
-        DocumentosEnum = (IEnumerable<Documentos>)oRespuestaDocumentos.Data;
+        // asigna a la variable false para indicar que no es visible, a la vez que la variable se asigna al parámetro del dialog
+        isDialogInfoVisible = false;
+        // notifica al componente dialog que sus parametros han cambiado, para que se actualice
+        StateHasChanged();
+        // entra en el if si no hubo éxito (no existe la mesa especificada)
+        if (oRespuestaDocumentos.Exito == 0)
+        {
+            // asigna true a la variable para que se muestre el dialog
+            isDialogInfoVisible = true;
+            // se asigna a mensaje el mensaje de error recibido de la respuesta y el número de mesa en concreto
+            mensaje = oRespuestaDocumentos.Mensaje + " - " + numMesa;
+            // una vez se muestra el mensaje, se asignan los valores por defecto
+            numMesa = 0;
+            precioTotal = 0;
+            DocumentosEnum = null;
+            // indica a los componentes hijos que sus valores han cambiado para que se actualicen
+            StateHasChanged();
+        }
+        else
+        {
+            //almacenamos los datos de la respuesta en DocumentosEnum
+            DocumentosEnum = (IEnumerable<Documentos>)oRespuestaDocumentos.Data;
+        }
     }
 
     //public async Task deleteDocumento(int mesaCode)
@@ -162,6 +198,13 @@
     {
         //almacenamos en numMesa el valor recibido en num, el cual Index recibe de Numpad
         continueFromSon = x;
+        StateHasChanged();
+    }
+
+    // notifica que se ha clicado Categorías al componente que lista las categorías
+    private async Task checkButtonCategoriasClicked()
+    {
+        isButtonCategoriasClicked = !isButtonCategoriasClicked;
         StateHasChanged();
     }
 }

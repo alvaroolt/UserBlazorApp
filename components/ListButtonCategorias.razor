@@ -18,7 +18,7 @@
             @foreach (Familias_art fam in CategoriasEnum)
             {
                 <div class="collistbutton">
-                    <button class="listbutton" type="button" href="#" name="@fam.fam_id" @onclick="e => showAccounts(fam.fam_id)">@fam.fam_nom</button>
+                    <button class="listbutton" type="button" href="#" name="@fam.fam_id" @onclick="e => showArticles(fam.fam_id)">@fam.fam_nom</button>
                 </div>
             }
         </div>
@@ -28,12 +28,15 @@
 <ListButtonArticulos @ref="listcategories" numFam="@numFam"></ListButtonArticulos>
 
 @code {
+    [Parameter]
+    public bool buttonCategoriasClicked { get; set; } = false;
+
     public string Url = "https://localhost:44322";
     Respuesta<List<Familias_art>> oRespuestaCategorias = new Respuesta<List<Familias_art>>();
 
     public IEnumerable<Familias_art> CategoriasEnum { get; set; }
 
-    private bool _isVisible = true;
+    private bool _isVisible = false;
     private int numFam;
     ListButtonArticulos listcategories;
 
@@ -44,6 +47,15 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        // cada vez que sus parámetros se actualizan, comprueba la visibilidad del componente.
+        // Si es false, lo muestra y asigna numFam a 0 para no visualizar ningún artículo
+        if (_isVisible == false)
+        {
+            _isVisible = !_isVisible;
+            numFam = 0;
+        }
+
+        //buttonCategoriasClicked = false;
         await base.OnParametersSetAsync();
     }
 
@@ -53,7 +65,8 @@
         CategoriasEnum = (IEnumerable<Familias_art>)oRespuestaCategorias.Data;
     }
 
-    private void showAccounts(int num)
+    // oculta la lista de categorías y asigna el número de familia de artículos que se deben mostrar
+    private void showArticles(int num)
     {
         _isVisible = !_isVisible;
         numFam = num;

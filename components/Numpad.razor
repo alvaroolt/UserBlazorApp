@@ -18,7 +18,7 @@
             </div>
             <div class="colnumpad">
                 @* llamamos al evento callback numMesaToIndex, que se encarga de enviar los números tecleados (parseados a int en vez de string) *@
-                <button class="numpadlargebutton" @onclick="@(() => numMesaToIndex.InvokeAsync(Int32.Parse(value)))">S</button>
+                <button class="numpadlargebutton" @onclick="checkAndSendValue">S</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
@@ -74,6 +74,14 @@
     // variable que almacena el número que se escribe con los botones de numpad
     private string value = "";
 
+    //OnParametersSetAsync se ejecuta al iniciar el componente o cada vez que se actualiza su estado
+    protected override async Task OnParametersSetAsync()
+    {
+        // cada vez que Numpad le manda un value al padre, vuelve a asignar un valor vacío a value
+        value = "";
+        await base.OnParametersSetAsync();
+    }
+
     private void typeKey(int key)
     {
         switch (key)
@@ -112,6 +120,15 @@
                     value += ",";
                 }
                 break;
+        }
+    }
+
+    private void checkAndSendValue()
+    {
+        // comprueba que el valor que se envía al componente padre no sea una cadena vacía
+        if (value != "")
+        {
+            numMesaToIndex.InvokeAsync(Int32.Parse(value));
         }
     }
 }

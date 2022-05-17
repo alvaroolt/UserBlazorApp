@@ -13,7 +13,7 @@
         <DialogButton Content="OK" OnClick="@OnDialogBtnClick" />
     </DialogButtons>
 </SfDialog>
-<SfButton @onclick="@OnOpenBtnClick">Open Dialog</SfButton>
+@*<SfButton @onclick="@OnOpenBtnClick">Open Dialog</SfButton>*@
 
 @code {
     //dialogContinueOperation recibe el parámetro headerMensaje, el cual es un string para escribir en el header del dialog
@@ -23,7 +23,8 @@
     [Parameter]
     public string mensaje { get; set; }
     // asigna como valor inicial el si es visible en true
-    private bool isDialogVisible { get; set; } = true;
+    [Parameter]
+    public bool isDialogVisible { get; set; } = false;
 
     // método que le asigna a isDialogVisible el valor false
     private void OnDialogBtnClick()
