@@ -1,104 +1,111 @@
-﻿@*fichero raiz del proyecto*@
-@page "/"
+﻿@page "/index"
 @*hacemos referencia a los componentes*@
 @using UserBlazorApp.components;
 @using WebServiceApiRest.Models;
 @using WebServiceApiRest.Models.Response;
 @using System.Net.Http;
 @using System.Net.Http.Json;
+@using Newtonsoft.Json;
 @inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-@if (1 == 0)
-{
-    <div class="contenedorgridandmenubuttons">
-        <div class="contenedorgrid">
-            @*<Grid documento="DocumentosEnum" ldocumentoToIndex="obtenerLdocumentoFromGrid"></Grid>*@
-            <Grid documento="DocumentosEnum"></Grid>
-        </div>
-        <div class="contenedormenubuttons">
-            <div class="container border">
-                <p class="visorprecio">@precioTotal€</p>
-                <div class="row justify-content-md-center rowmenubuttons">
-                    <div class="col-auto colmenubutton">
-                        @*<button class="menubutton" @onclick="e => deleteDocumento(numMesa)"><img class="menuimg" src="images/deleteLine.png" /></button>*@ @*evitar el ~/*@
-                        <button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button>
+<AuthorizeView>
+    <Authorized>
+        <div class="contenedorgridandmenubuttons">
+            <div class="contenedorgrid">
+                @*<Grid documento="DocumentosEnum" ldocumentoToIndex="obtenerLdocumentoFromGrid"></Grid>*@
+                <Grid documento="DocumentosEnum"></Grid>
+            </div>
+            <div class="contenedormenubuttons">
+                <div class="container border">
+                    <div class="contenedorvisores">
+                        <p class="visorprecio">@nombreUsuario</p>
+                        <p class="visorprecio">@precioTotal€</p>
                     </div>
-                    <div class="col-auto colmenubutton">
-                        <button class="menubutton">Boton</button>
+                    <div class="row justify-content-md-center rowmenubuttons">
+                        <div class="col-auto colmenubutton">
+                            @*<button class="menubutton" @onclick="e => deleteDocumento(numMesa)"><img class="menuimg" src="images/deleteLine.png" /></button>*@ @*evitar el ~/*@
+                            <button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button>
+                        </div>
+                        <div class="col-auto colmenubutton">
+                            <button class="menubutton">Boton</button>
+                        </div>
                     </div>
-                </div>
-                <div class="row justify-content-md-center rowmenubuttons">
-                    <div class="col-auto colmenubutton">
-                        <button class="menubutton">Boton</button>
+                    <div class="row justify-content-md-center rowmenubuttons">
+                        <div class="col-auto colmenubutton">
+                            <button class="menubutton">Boton</button>
+                        </div>
+                        <div class="col-auto colmenubutton">
+                            <button class="menubutton">Boton</button>
+                        </div>
                     </div>
-                    <div class="col-auto colmenubutton">
-                        <button class="menubutton">Boton</button>
+                    <div class="row justify-content-md-center rowmenubuttons">
+                        <div class="col-auto colmenubutton">
+                            <button class="menubutton">Boton</button>
+                        </div>
+                        <div class="col-auto colmenubutton">
+                            <button class="menubutton">Boton</button>
+                        </div>
                     </div>
-                </div>
-                <div class="row justify-content-md-center rowmenubuttons">
-                    <div class="col-auto colmenubutton">
-                        <button class="menubutton">Boton</button>
-                    </div>
-                    <div class="col-auto colmenubutton">
-                        <button class="menubutton">Boton</button>
-                    </div>
-                </div>
-                <div class="row justify-content-md-center rowmenubuttons">
-                    <div class="col-auto">
-                        <button @onclick="checkButtonCategoriasClicked" class="menubutton categorybutton">Categorías</button>
-                        @*<button class="menubutton categorybutton">Categorías</button>*@
+                    <div class="row justify-content-md-center rowmenubuttons">
+                        <div class="col-auto">
+                            <button @onclick="checkButtonCategoriasClicked" class="menubutton categorybutton">Categorías</button>
+                            @*<button class="menubutton categorybutton">Categorías</button>*@
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    @*@if (ldocumentoFromGrid != null)
+        @*@if (ldocumentoFromGrid != null)
+            {
+                <p>@ldocumentoFromGrid.ldoc_id</p>
+            }*@
+        @*<ListButton></ListButton>*@
+
+        @*llamamos al teclado numérico*@
+
+        @*@if (numMesa != 0 || categoriasClicked)*@
+        @if (numMesa != 0)
         {
-            <p>@ldocumentoFromGrid.ldoc_id</p>
-        }*@
-    @*<ListButton></ListButton>*@
+            <ListButtonCategorias buttonCategoriasClicked="@isButtonCategoriasClicked"></ListButtonCategorias>
+        }
+        else
+        {
+            <Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
+        }
 
-    @*llamamos al teclado numérico*@
+        @*<p>@continueFromSon</p>
+            <DialogContinueOperation continueToFather="obtenerSiContinue" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinueOperation>*@
+        <DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>
 
-    @*@if (numMesa != 0 || categoriasClicked)*@
-    @if (numMesa != 0)
-    {
-        <ListButtonCategorias buttonCategoriasClicked="@isButtonCategoriasClicked"></ListButtonCategorias>
-    }
-    else
-    {
-        <Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
-    }
-
-    @*<p>@continueFromSon</p>
-        <DialogContinueOperation continueToFather="obtenerSiContinue" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinueOperation>*@
-    <DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>
-
-    <footer class="footer">
-        <div class="col-auto contenedornavbutton">
-            <button class="btn btn-primary p-4 rounded-0 navbutton">Salir</button>
-        </div>
-        <div class="col-auto contenedornavbutton">
-            <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
-        </div>
-        <div class="col-auto contenedornavbutton">
-            <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
-        </div>
-        <div class="col-auto contenedornavbutton">
-            <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
-        </div>
-        <div class="col-auto contenedornavbutton">
-            <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
-        </div>
-        <div class="col-auto contenedornavbutton">
-            <p class="visormesa">Mesa nº @numMesa</p>
-        </div>
-    </footer>
-}
-else
-{
-    <Login></Login>
-}
+        <footer class="footer">
+            <div class="col-auto contenedornavbutton">
+                <button class="btn btn-primary p-4 rounded-0 navbutton" @onclick="LogoutUserRequest">Salir</button>
+            </div>
+            <div class="col-auto contenedornavbutton">
+                <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+            </div>
+            <div class="col-auto contenedornavbutton">
+                <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+            </div>
+            <div class="col-auto contenedornavbutton">
+                <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+            </div>
+            <div class="col-auto contenedornavbutton">
+                <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+            </div>
+            <div class="col-auto contenedornavbutton">
+                <p class="visormesa">Mesa nº @numMesa</p>
+            </div>
+        </footer>
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView>
+    <NotAuthorized>
+        <p>No has iniciado sesión</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     // url que apunta a la api
@@ -121,6 +128,7 @@ else
     private bool isDialogInfoVisible = false;
     // boolean que controla la visibilidad de las categorías
     private bool isButtonCategoriasClicked = false;
+    string nombreUsuario = "";
 
     //private bool categoriasClicked = false;
 
@@ -131,10 +139,21 @@ else
     // boolean que recibe index del componente dialog para saber si continuar con la operación
     private bool continueFromSon;
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //
-    //}
+    protected override async Task OnInitializedAsync()
+    {
+        // se almacena en authState el usuario actual
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        // si no hay usuario o si el usuario no se ha identificado, es redirigido a login
+        if (user.Identity == null)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else if (!user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
 
     private async void obtenerNumMesa(int num)
     {
@@ -213,5 +232,28 @@ else
     {
         isButtonCategoriasClicked = !isButtonCategoriasClicked;
         StateHasChanged();
+    }
+
+    private async Task LogoutUserRequest()
+    {
+        // llama a LogOutAsync del servicio UserService, el cual se encarga de cerrar la sesión
+        await ServiceProvider.Get<UserService>().LogoutAsync();
+        // una vez cierra la sesión, redirige a la página principal
+        NavigationManager.NavigateTo("/");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var user = await sessionStorage.GetItemAsync<string>("usuario");
+        if (user != null)
+        {
+            // Convertir de Json a objeto
+            Usuarios usuario = JsonConvert.DeserializeObject<Usuarios>(user);
+            nombreUsuario = usuario.user_nom;
+            if (firstRender)
+            {
+                StateHasChanged();
+            }
+        }
     }
 }

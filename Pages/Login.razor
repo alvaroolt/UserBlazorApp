@@ -1,4 +1,15 @@
-﻿<div class="contenedornumpad">
+﻿@*fichero raiz del proyecto*@
+@page "/"
+
+@using UserBlazorApp.components; 
+@using WebServiceApiRest.Models;
+@using WebServiceApiRest.Models.Response;
+@using System.Net.Http.Json;
+@using Newtonsoft.Json;
+@inject HttpClient Http
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<div class="contenedornumpadlogin">
     <div class="contenedorvisornumpad">
         <label for="visornumpad">Iniciar sesión</label>
         <input type="text" id="visornumpad" value="@value" />
@@ -49,7 +60,7 @@
             </div>
         </div>
     </div>
-    <form class="formLogin">
+    <div class="formLogin">
         <div class="formSelectLoginConfirm">
             <label for="terminales">Selecciona terminal: </label>
             <select name="terminales" id="terminales">
@@ -59,16 +70,22 @@
             </select>
         </div>
         <div class="formButtonLoginConfirm">
-            @*<button class="buttonLoginConfirm">Confirmar</button>*@
-            <input class="buttonLoginConfirm" type="submit" value="Confirmar" />
+            <button class="buttonLoginConfirm" @onclick="LoginUserRequest">Confirmar</button>
+            @*<input class="buttonLoginConfirm" type="submit" value="Confirmar" />*@
         </div>
-    </form>
+    </div>
 </div>
+<DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="Error" mensaje="@mensaje"></DialogInfo>
 
 @code {
-
     // variable que almacena el número que se escribe con los botones del teclado numérico
     private string value = "";
+    public string Url = "https://localhost:44322";
+    Respuesta<Usuarios> oRespuestaUsuarios = new Respuesta<Usuarios>();
+    Usuarios usuario = new Usuarios();
+    private bool isDialogInfoVisible = false;
+    private string mensaje = "";
+
 
     private void typeKey(int key)
     {
@@ -97,6 +114,63 @@
             case -2:
                 value = "";
                 break;
+        }
+    }
+
+    private async Task LoginUserRequest()
+    {
+        if (value != "")
+        {
+            // obtiene el usuario de la bd según la contraseña enviada
+            await getUsuarios(value);
+
+            if (oRespuestaUsuarios.Exito == 1)
+            {
+                // llama al método de iniciar sesión del servicio UserService
+                await ServiceProvider.Get<UserService>().LoginAsync(usuario);
+                // guarda la información de usuario utilizando SessionStorage
+                await sessionStorage.SetItemAsync("usuario", usuario);
+                NavigationManager.NavigateTo("/index");
+            } else
+            {
+                mensaje = oRespuestaUsuarios.Mensaje;
+                isDialogInfoVisible = true;
+                StateHasChanged();
+            }
+
+        }
+    }
+
+    private async Task LogoutUserRequest()
+    {
+        // llama a LogOutAsync del servicio UserService, el cual se encarga de cerrar la sesión
+        await ServiceProvider.Get<UserService>().LogoutAsync();
+        // una vez cierra la sesión, redirige a la página principal
+        NavigationManager.NavigateTo("/");
+    }
+
+    public async Task getUsuarios(string pass)
+    {
+        oRespuestaUsuarios = await Http.GetFromJsonAsync<Respuesta<Usuarios>>(Url + "/api/Usuarios/" + pass);
+        isDialogInfoVisible = false;
+        //UsuariosEnum = (IEnumerable<Usuarios>)oRespuestaUsuarios.Data;
+        usuario = oRespuestaUsuarios.Data;
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // recupera en user la información de usuario utilizando SessionStorage
+        var user = await sessionStorage.GetItemAsync<string>("usuario");
+        if (user != null)
+        {
+            // Convierte de Json a objeto y fuerza a que las variables que intervienen en la página se revisualicen
+            usuario = JsonConvert.DeserializeObject<Usuarios>(user);
+            //si es la primera vez que se llama a OnAfterRenderAsync, actualiza el componente
+            if (firstRender)
+            {
+                StateHasChanged();
+            }
         }
     }
 }

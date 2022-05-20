@@ -7,11 +7,7 @@
 @using System.Net.Http.Json;
 @inject HttpClient Http
 
-@if (ArticulosEnum == null)
-{
-    <p>Cargando...</p>
-}
-else
+@if (ArticulosEnum != null)
 {
     <div class="contenedorlistbuttons">
         @foreach (Articulos art in ArticulosEnum)

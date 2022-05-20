@@ -8,6 +8,9 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Net.Http;
 using Syncfusion.Blazor;
+using Blazored.SessionStorage;
+using Microsoft.AspNetCore.Components.Authorization;
+using UserBlazorApp.Data;
 
 namespace UserBlazorApp
 {
@@ -26,6 +29,13 @@ namespace UserBlazorApp
         {
             services.AddRazorPages(); // agrega servicios MVC para páginas al IServiceCollection especificado. https://docs.microsoft.com/es-es/dotnet/api/microsoft.extensions.dependencyinjection.mvcservicecollectionextensions.addrazorpages?view=aspnetcore-6.0
             services.AddServerSideBlazor(); // agrega server-side blazor a la colección de servicios
+            services.AddAuthorization();
+            services.AddAuthentication();
+            services.AddProtectedBrowserStorage();
+            services.AddScoped<AuthenticationStateProvider, UserService>();
+            services.AddHttpContextAccessor();
+            services.AddHttpClient();
+            services.AddBlazoredSessionStorage();
 
             // AddHttpClient permite enviar solicitudes y recibir respuestas HTTP de un recurso identificado por un URI.
             //services.AddHttpClient<IServiceUser, ServiceUser>(user =>
@@ -46,7 +56,7 @@ namespace UserBlazorApp
             //});
             services.AddSingleton(new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:44322")
+                BaseAddress = new Uri("http://localhost:44322")
             });
             services.AddSyncfusionBlazor(); // agrega el servicio de Syncfusion para Blazor
         }

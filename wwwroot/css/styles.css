@@ -26,12 +26,14 @@ table {
     max-height: 331px;
 }
 
+.contenedorvisores {
+    display: flex;
+    justify-content:space-between;
+}
+
 .visorprecio {
-    text-align: end;
     font-size: 22px;
-    width: fit-content;
     border: 2px solid black;
-    margin-left: auto;
     padding: 0 2%;
     margin-bottom: 0;
 }
@@ -134,6 +136,13 @@ table {
 
 .contenedornumpad {
     margin: 0 auto;
+    padding: 1%;
+    border: 1px solid black;
+    width: 90%;
+}
+
+.contenedornumpadlogin {
+    margin: auto;
     padding: 1%;
     border: 1px solid black;
     width: 90%;
