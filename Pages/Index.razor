@@ -14,8 +14,8 @@
     <Authorized>
         <div class="contenedorgridandmenubuttons">
             <div class="contenedorgrid">
-                @*<Grid documento="DocumentosEnum" ldocumentoToIndex="obtenerLdocumentoFromGrid"></Grid>*@
-                <Grid documento="DocumentosEnum"></Grid>
+                <Grid documento="DocumentosEnum" ldocumentoToIndex="obtenerLdocumentoFromGrid"></Grid>
+                @*<Grid documento="DocumentosEnum"></Grid>*@
             </div>
             <div class="contenedormenubuttons">
                 <div class="container border">
@@ -25,8 +25,8 @@
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
                         <div class="col-auto colmenubutton">
-                            @*<button class="menubutton" @onclick="e => deleteDocumento(numMesa)"><img class="menuimg" src="images/deleteLine.png" /></button>*@ @*evitar el ~/*@
-                            <button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button>
+                            <button class="menubutton" @onclick="e => deleteDocumento(numMesa)"><img class="menuimg" src="images/deleteLine.png" /></button> @*evitar el ~/*@
+                            @*<button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button>*@
                         </div>
                         <div class="col-auto colmenubutton">
                             <button class="menubutton">Boton</button>
@@ -195,14 +195,16 @@
         }
     }
 
-    //public async Task deleteDocumento(int mesaCode)
-    //{
-    //    bool confirmar = await JsRuntime.InvokeAsync<bool>("confirm", "¿Estás seguro?");
-    //    if (confirmar)
-    //    {
-    //        await ServiceEliminarMesa.BorrarMesa(numMesa);
-    //    }
-    //}
+    public async Task deleteDocumento(int mesaCode)
+    {
+        if (oRespuestaDocumentos.Exito == 1)
+        {
+            await Http.DeleteAsync(Url + "/api/Mesa/" + numMesa);
+            oRespuestaDocumentos = null;
+            DocumentosEnum = null;
+            StateHasChanged();
+        }
+    }
 
     private async Task getPrecio()
     {
@@ -214,10 +216,10 @@
         }
     }
 
-    //void obtenerLdocumentoFromGrid(Ldocumentos ldocumento)
-    //{
-    //    ldocumentoFromGrid = ldocumento;
-    //}
+    void obtenerLdocumentoFromGrid(Ldocumentos ldocumento)
+    {
+        ldocumentoFromGrid = ldocumento;
+    }
 
     // variable que obtiene información de dialog (boolean para continuar o no)
     private async void obtenerSiContinue(bool x)
@@ -244,6 +246,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // recupera en user la información de usuario utilizando SessionStorage
         var user = await sessionStorage.GetItemAsync<string>("usuario");
         if (user != null)
         {
