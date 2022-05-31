@@ -97,7 +97,7 @@
 @code {
     // variable que almacena el número que se escribe con los botones del teclado numérico
     private string value = "";
-    public string Url = "https://localhost:44322";
+    public string Url = "http://192.168.1.185:44322";
     Respuesta<Usuarios> oRespuestaUsuarios = new Respuesta<Usuarios>();
     Usuarios usuario = new Usuarios();
     Respuesta<List<Terminal>> oRespuestaTerminales = new Respuesta<List<Terminal>>();
@@ -148,6 +148,11 @@
 
             if (oRespuestaUsuarios.Exito == 1 && terminal != null)
             {
+                // actualiza la lista de terminales, por si ha sido alterada la tabla de temrinales en el proceso de iniciar sesión
+                await getTerminales();
+                // se refresca el terminal actual, por si ha sido alterada la tabla de terminales en el proceso de iniciar sesión
+                terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == terminal.ter_id);
+
                 if (terminal.ter_bloqueado == 0)
                 {
                     // llama al método de iniciar sesión del servicio UserService
