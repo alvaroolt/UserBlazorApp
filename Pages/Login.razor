@@ -1,13 +1,14 @@
 ﻿@*fichero raiz del proyecto*@
 @page "/"
 
-@using UserBlazorApp.components; 
+@using UserBlazorApp.components;
 @using WebServiceApiRest.Models;
 @using WebServiceApiRest.Models.Response;
 @using System.Net.Http.Json;
 @using Newtonsoft.Json;
 @inject HttpClient Http
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject ICookie cookie
 
 <div class="contenedornumpadlogin">
     <div class="contenedorvisornumpad">
@@ -63,10 +64,26 @@
     <div class="formLogin">
         <div class="formSelectLoginConfirm">
             <label for="terminales">Selecciona terminal: </label>
-            <select name="terminales" id="terminales">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
+            <select name="terminales" id="terminales" @onchange="OnSelectTerminal">
+                @if (TerminalesEnum != null)
+                {
+                    foreach (var fterminal in TerminalesEnum)
+                    {
+                        // si el id de terminal almacenado en la cookie coincide con el id del terminal del foreach, entra al if
+                        // mostrando el option como por defecto, y asignando ese id al terminal "actual"
+                        if (idTerminalCookie == fterminal.ter_id)
+                        {
+                            <option selected="selected" value="@fterminal.ter_id">@fterminal.ter_nom</option>
+                            terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == fterminal.ter_id);
+                        }
+                        else
+                        {
+                            <option value="@fterminal.ter_id">@fterminal.ter_nom</option>
+                        }
+
+                    }
+
+                }
             </select>
         </div>
         <div class="formButtonLoginConfirm">
@@ -83,8 +100,13 @@
     public string Url = "https://localhost:44322";
     Respuesta<Usuarios> oRespuestaUsuarios = new Respuesta<Usuarios>();
     Usuarios usuario = new Usuarios();
+    Respuesta<List<Terminal>> oRespuestaTerminales = new Respuesta<List<Terminal>>();
+    public IEnumerable<Terminal> TerminalesEnum { get; set; }
+    public Terminal terminal { get; set; }
     private bool isDialogInfoVisible = false;
     private string mensaje = "";
+    // almacena el id del terminal de la cookie
+    private int idTerminalCookie;
 
 
     private void typeKey(int key)
@@ -124,14 +146,37 @@
             // obtiene el usuario de la bd según la contraseña enviada
             await getUsuarios(value);
 
-            if (oRespuestaUsuarios.Exito == 1)
+            if (oRespuestaUsuarios.Exito == 1 && terminal != null)
             {
-                // llama al método de iniciar sesión del servicio UserService
-                await ServiceProvider.Get<UserService>().LoginAsync(usuario);
-                // guarda la información de usuario utilizando SessionStorage
-                await sessionStorage.SetItemAsync("usuario", usuario);
-                NavigationManager.NavigateTo("/index");
-            } else
+                if (terminal.ter_bloqueado == 0)
+                {
+                    // llama al método de iniciar sesión del servicio UserService
+                    await ServiceProvider.Get<UserService>().LoginAsync(usuario);
+
+                    // actualiza el terminal para bloquearlo a otros usuarios
+                    await updateTerminal(terminal, 1);
+
+                    // guarda la información de usuario utilizando SessionStorage
+                    await sessionStorage.SetItemAsync("usuario", usuario);
+                    await sessionStorage.SetItemAsync("terminal", terminal);
+
+                    NavigationManager.NavigateTo("/index");
+
+                }
+                else
+                {
+                    mensaje = "Selecciona un terminal que no esté en uso";
+                    isDialogInfoVisible = true;
+                    StateHasChanged();
+                }
+            }
+            else if (terminal == null)
+            {
+                mensaje = "Selecciona un terminal correcto";
+                isDialogInfoVisible = true;
+                StateHasChanged();
+            }
+            else
             {
                 mensaje = oRespuestaUsuarios.Mensaje;
                 isDialogInfoVisible = true;
@@ -144,6 +189,10 @@
     {
         // llama a LogOutAsync del servicio UserService, el cual se encarga de cerrar la sesión
         await ServiceProvider.Get<UserService>().LogoutAsync();
+
+        // actualiza el terminal para desbloquearlo a otros usuarios
+        await updateTerminal(terminal, 1);
+
         // una vez cierra la sesión, redirige a la página principal
         NavigationManager.NavigateTo("/");
     }
@@ -152,24 +201,81 @@
     {
         oRespuestaUsuarios = await Http.GetFromJsonAsync<Respuesta<Usuarios>>(Url + "/api/Usuarios/" + pass);
         isDialogInfoVisible = false;
-        //UsuariosEnum = (IEnumerable<Usuarios>)oRespuestaUsuarios.Data;
         usuario = oRespuestaUsuarios.Data;
         StateHasChanged();
+    }
+
+    public async Task getTerminales()
+    {
+        //almacenamos en oRespuesta la respuesta que recibimos de la api
+        oRespuestaTerminales = await Http.GetFromJsonAsync<Respuesta<List<Terminal>>>(Url + "/api/Terminal");
+
+        // lista de terminales para mostrar en el select
+        TerminalesEnum = (IEnumerable<Terminal>)oRespuestaTerminales.Data;
+    }
+
+    // el método es llamado cada vez que el select option de terminales es alterado (se clica en un option diferente)
+    private void OnSelectTerminal(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() != "0")
+        {
+            // obtiene el id del terminal seleccionado
+            int idTerminal = int.Parse(e.Value.ToString());
+
+            // compara el id con los de la BD, para encontrar el terminal deseado
+            terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == idTerminal);
+
+            // se crea una cookie que almacena el id del terminal
+            cookie.SetValue("cookieTer", terminal.ter_id.ToString());
+        }
+        else
+        {
+            terminal = null;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await getTerminales();
+        if (await cookie.GetValue("cookieTer") == "")
+        {
+            await cookie.GetValue("cookieTer", "1");
+            terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == 1);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         // recupera en user la información de usuario utilizando SessionStorage
         var user = await sessionStorage.GetItemAsync<string>("usuario");
+
+        // si no hay cookie cookieTer, se le asigna el valor 1 por defecto, si no, se obtiene el valor de la cookie (id terminal)
+        if (await cookie.GetValue("cookieTer") == "")
+        {
+            await cookie.GetValue("cookieTer", "1");
+        }
+        else
+        {
+            idTerminalCookie = Int32.Parse(await cookie.GetValue("cookieTer"));
+        }
+
         if (user != null)
         {
             // Convierte de Json a objeto y fuerza a que las variables que intervienen en la página se revisualicen
             usuario = JsonConvert.DeserializeObject<Usuarios>(user);
+            //terminal = JsonConvert.DeserializeObject<Terminal>(ssterminal);
             //si es la primera vez que se llama a OnAfterRenderAsync, actualiza el componente
             if (firstRender)
             {
                 StateHasChanged();
             }
         }
+    }
+
+    // método utilizado para bloquear o desbloquear el terminal
+    private async Task updateTerminal(Terminal ter, int bloq)
+    {
+        ter.ter_bloqueado = bloq;
+        await Http.PutAsJsonAsync<Terminal>(Url + "/api/Terminal", ter);
     }
 }

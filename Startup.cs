@@ -36,6 +36,7 @@ namespace UserBlazorApp
             services.AddHttpContextAccessor();
             services.AddHttpClient();
             services.AddBlazoredSessionStorage();
+            services.AddScoped<ICookie, Cookie>();
 
             // AddHttpClient permite enviar solicitudes y recibir respuestas HTTP de un recurso identificado por un URI.
             //services.AddHttpClient<IServiceUser, ServiceUser>(user =>

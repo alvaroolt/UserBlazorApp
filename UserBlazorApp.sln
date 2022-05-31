@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserBlazorApp", "UserBlazorApp.csproj", "{A4F05A84-FFE8-4669-9853-0522E73CBCB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServiceApiRest", "..\WebServiceApiRest\WebServiceApiRest.csproj", "{4159340E-3F75-46A3-A333-F042C5ABFECF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServiceApiRest.Models", "..\WebServiceApiRest.Models\WebServiceApiRest.Models.csproj", "{D270984D-FE24-4F1F-92AF-E119D8BEF98D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServiceNetCore", "..\WebServiceNetCore\WebServiceNetCore.csproj", "{0B1B2A1D-D80A-440A-BBAC-108683482C4D}"
@@ -21,10 +19,6 @@ Global
 		{A4F05A84-FFE8-4669-9853-0522E73CBCB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4F05A84-FFE8-4669-9853-0522E73CBCB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4F05A84-FFE8-4669-9853-0522E73CBCB8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4159340E-3F75-46A3-A333-F042C5ABFECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4159340E-3F75-46A3-A333-F042C5ABFECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4159340E-3F75-46A3-A333-F042C5ABFECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4159340E-3F75-46A3-A333-F042C5ABFECF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D270984D-FE24-4F1F-92AF-E119D8BEF98D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D270984D-FE24-4F1F-92AF-E119D8BEF98D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D270984D-FE24-4F1F-92AF-E119D8BEF98D}.Release|Any CPU.ActiveCfg = Release|Any CPU

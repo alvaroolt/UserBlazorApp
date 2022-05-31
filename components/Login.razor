@@ -1,0 +1,102 @@
+﻿<div class="contenedornumpad">
+    <div class="contenedorvisornumpad">
+        <label for="visornumpad">Iniciar sesión</label>
+        <input type="text" id="visornumpad" value="@value" />
+    </div>
+    <div class="numpadLogin">
+        <div class="row justify-content-md-center rownumpadLogin">
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(7)">7</button>
+            </div>
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(8)">8</button>
+            </div>
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(9)">9</button>
+            </div>
+        </div>
+        <div class="row justify-content-md-center rownumpadLogin">
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(4)">4</button>
+            </div>
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(5)">5</button>
+            </div>
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(6)">6</button>
+            </div>
+        </div>
+        <div class="row justify-content-md-center rownumpadLogin">
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(1)">1</button>
+            </div>
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(2)">2</button>
+            </div>
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(3)">3</button>
+            </div>
+        </div>
+        <div class="row justify-content-md-center rownumpadLogin">
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(0)">0</button>
+            </div>
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(-2)">C</button>
+            </div>
+            <div class="colnumpad">
+                <button class="numpadbutton" @onclick="e => typeKey(-1)">&#60;&#61;</button>
+            </div>
+        </div>
+    </div>
+    <form class="formLogin">
+        <div class="formSelectLoginConfirm">
+            <label for="terminales">Selecciona terminal: </label>
+            <select name="terminales" id="terminales">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+        </div>
+        <div class="formButtonLoginConfirm">
+            @*<button class="buttonLoginConfirm">Confirmar</button>*@
+            <input class="buttonLoginConfirm" type="submit" value="Confirmar" />
+        </div>
+    </form>
+</div>
+
+@code {
+
+    // variable que almacena el número que se escribe con los botones del teclado numérico
+    private string value = "";
+
+    private void typeKey(int key)
+    {
+        switch (key)
+        {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                value += key.ToString().Trim();
+                break;
+            case -1:
+                if (value.Length > 0)
+                {
+                    string newvalue = "";
+                    newvalue = value.Remove(value.LastIndexOf("")).Trim();
+                    value = newvalue;
+                }
+                break;
+            case -2:
+                value = "";
+                break;
+        }
+    }
+}

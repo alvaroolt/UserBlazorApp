@@ -9,6 +9,7 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject ICookie cookie 
 
 <AuthorizeView>
     <Authorized>
@@ -21,6 +22,7 @@
                 <div class="container border">
                     <div class="contenedorvisores">
                         <p class="visorprecio">@nombreUsuario</p>
+                        @*<p class="visorprecio">@nombreTerminal</p>*@
                         <p class="visorprecio">@precioTotal€</p>
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
@@ -129,6 +131,8 @@
     // boolean que controla la visibilidad de las categorías
     private bool isButtonCategoriasClicked = false;
     string nombreUsuario = "";
+    string nombreTerminal = "";
+    Terminal terminalActual { get; set; }
 
     //private bool categoriasClicked = false;
 
@@ -240,6 +244,9 @@
     {
         // llama a LogOutAsync del servicio UserService, el cual se encarga de cerrar la sesión
         await ServiceProvider.Get<UserService>().LogoutAsync();
+
+        await updateTerminal(terminalActual, 0);
+
         // una vez cierra la sesión, redirige a la página principal
         NavigationManager.NavigateTo("/");
     }
@@ -248,15 +255,26 @@
     {
         // recupera en user la información de usuario utilizando SessionStorage
         var user = await sessionStorage.GetItemAsync<string>("usuario");
+        terminalActual = await sessionStorage.GetItemAsync<Terminal>("terminal");
+
         if (user != null)
         {
             // Convertir de Json a objeto
             Usuarios usuario = JsonConvert.DeserializeObject<Usuarios>(user);
+            Terminal terminal = await sessionStorage.GetItemAsync<Terminal>("terminal");
+
             nombreUsuario = usuario.user_nom;
+            nombreTerminal = terminal.ter_nom;
             if (firstRender)
             {
                 StateHasChanged();
             }
         }
+    }
+
+    private async Task updateTerminal(Terminal ter, int bloq)
+    {
+        ter.ter_bloqueado = bloq;
+        await Http.PutAsJsonAsync<Terminal>(Url + "/api/Terminal", ter);
     }
 }
