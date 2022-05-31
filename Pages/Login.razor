@@ -239,7 +239,8 @@
         await getTerminales();
         if (await cookie.GetValue("cookieTer") == "")
         {
-            await cookie.GetValue("cookieTer", "1");
+            //await cookie.GetValue("cookieTer", "1");
+            await cookie.SetValue("cookieTer", "1");
             terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == 1);
         }
     }
