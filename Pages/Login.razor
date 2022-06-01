@@ -8,12 +8,14 @@
 @using Newtonsoft.Json;
 @inject HttpClient Http
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-@inject ICookie cookie
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@*@inject ICookie cookie*@
 
 <div class="contenedornumpadlogin">
     <div class="contenedorvisornumpad">
         <label for="visornumpad">Iniciar sesión</label>
-        <input type="text" id="visornumpad" value="@value" />
+        @*<p>Id del terminal almacenado en la cookie: @idTerminalLocalStorage</p>*@
+        <input type="text" id="visornumpad" value="@value" disabled />
     </div>
     <div class="numpadLogin">
         <div class="row justify-content-md-center rownumpadLogin">
@@ -71,7 +73,9 @@
                     {
                         // si el id de terminal almacenado en la cookie coincide con el id del terminal del foreach, entra al if
                         // mostrando el option como por defecto, y asignando ese id al terminal "actual"
-                        if (idTerminalCookie == fterminal.ter_id)
+                        //if (idTerminalLocalStorage != null)
+                        //{
+                        if (idTerminalLocalStorage == fterminal.ter_id)
                         {
                             <option selected="selected" value="@fterminal.ter_id">@fterminal.ter_nom</option>
                             terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == fterminal.ter_id);
@@ -80,7 +84,7 @@
                         {
                             <option value="@fterminal.ter_id">@fterminal.ter_nom</option>
                         }
-
+                        //}
                     }
 
                 }
@@ -88,7 +92,6 @@
         </div>
         <div class="formButtonLoginConfirm">
             <button class="buttonLoginConfirm" @onclick="LoginUserRequest">Confirmar</button>
-            @*<input class="buttonLoginConfirm" type="submit" value="Confirmar" />*@
         </div>
     </div>
 </div>
@@ -106,7 +109,7 @@
     private bool isDialogInfoVisible = false;
     private string mensaje = "";
     // almacena el id del terminal de la cookie
-    private int idTerminalCookie;
+    private int idTerminalLocalStorage;
 
 
     private void typeKey(int key)
@@ -188,6 +191,12 @@
                 StateHasChanged();
             }
         }
+        else
+        {
+            mensaje = "Introduce el PIN";
+            isDialogInfoVisible = true;
+            StateHasChanged();
+        }
     }
 
     private async Task LogoutUserRequest()
@@ -220,7 +229,7 @@
     }
 
     // el método es llamado cada vez que el select option de terminales es alterado (se clica en un option diferente)
-    private void OnSelectTerminal(ChangeEventArgs e)
+    private async Task OnSelectTerminal(ChangeEventArgs e)
     {
         if (e.Value.ToString() != "0")
         {
@@ -231,7 +240,8 @@
             terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == idTerminal);
 
             // se crea una cookie que almacena el id del terminal
-            cookie.SetValue("cookieTer", terminal.ter_id.ToString());
+            //await cookie.SetValue("cookieTer", terminal.ter_id.ToString());
+            await localStorage.SetItemAsync("idTerminal", terminal.ter_id.ToString());
         }
         else
         {
@@ -242,12 +252,12 @@
     protected override async Task OnInitializedAsync()
     {
         await getTerminales();
-        if (await cookie.GetValue("cookieTer") == "")
-        {
-            //await cookie.GetValue("cookieTer", "1");
-            await cookie.SetValue("cookieTer", "1");
-            terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == 1);
-        }
+        //if (await localStorage.GetItemAsync<string>("idTerminal") == "")
+        //{
+        //    await localStorage.SetItemAsync("idTerminal", "1");
+        //    idTerminalLocalStorage = await localStorage.GetItemAsync<string>("idTerminal");
+        //    terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == 1);
+        //}
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -256,14 +266,13 @@
         var user = await sessionStorage.GetItemAsync<string>("usuario");
 
         // si no hay cookie cookieTer, se le asigna el valor 1 por defecto, si no, se obtiene el valor de la cookie (id terminal)
-        if (await cookie.GetValue("cookieTer") == "")
+        //var x = await localStorage.GetItemAsync<string>("idTerminal");
+        if (await localStorage.GetItemAsync<string>("idTerminal") == null)
         {
-            await cookie.GetValue("cookieTer", "1");
+            await localStorage.SetItemAsync("idTerminal", "1");
         }
-        else
-        {
-            idTerminalCookie = Int32.Parse(await cookie.GetValue("cookieTer"));
-        }
+
+        idTerminalLocalStorage = Int32.Parse(await localStorage.GetItemAsync<string>("idTerminal"));
 
         if (user != null)
         {
@@ -271,10 +280,11 @@
             usuario = JsonConvert.DeserializeObject<Usuarios>(user);
             //terminal = JsonConvert.DeserializeObject<Terminal>(ssterminal);
             //si es la primera vez que se llama a OnAfterRenderAsync, actualiza el componente
-            if (firstRender)
-            {
-                StateHasChanged();
-            }
+        }
+
+        if (firstRender)
+        {
+            StateHasChanged();
         }
     }
 

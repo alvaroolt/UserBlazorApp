@@ -28,7 +28,7 @@ table {
 
 .contenedorvisores {
     display: flex;
-    justify-content:flex-end;
+    justify-content: flex-end;
 }
 
 .visorprecio {
@@ -190,7 +190,7 @@ table {
 }
 
 .formLogin {
-    margin-top: 20px;
+    margin-top: 5px;
     font-size: 18px;
 }
 
@@ -202,9 +202,15 @@ table {
     text-align: center;
 }
 
+    .formSelectLoginConfirm label {
+        width: 100%;
+    }
+
 .formButtonLoginConfirm {
     display: flex;
     justify-content: flex-end;
+    padding: 10px;
+    border-top: 1px solid black;
 }
 
 .buttonLoginConfirm {
@@ -212,9 +218,63 @@ table {
     border-radius: 15px;
 }
 
-@media (max-width: 360px) {
+@media (max-width: 361px) {
     .contenedorgrid {
         max-height: 53px;
+    }
+}
+
+/* DIMENSIONES PARA XIAOMI REDMI NOTE 4*/
+@media (min-width: 355px) and (max-width: 365px) and (min-height: 600px) and (max-height: 620px) {
+    /*.padreindex {
+        background-color: red;
+    }*/
+
+    .contenedorgrid {
+        max-height: 287px;
+    }
+
+    .menubutton {
+        width: 55px;
+        height: 55px;
+    }
+
+    .menuimg {
+        width: 35px;
+    }
+
+    .contenedornumpad .contenedorvisornumpad label {
+        font-size: 20px;
+    }
+
+    .contenedornumpad .contenedorvisornumpad input {
+        font-size: 15px;
+    }
+
+    .contenedornumpad .colnumpad {
+        margin: 1%;
+    }
+
+    .contenedornumpad .numpadbutton {
+        width: 40px;
+        height: 40px;
+        font-size: 25px;
+    }
+
+    .contenedornumpad .numpadlargebutton {
+        width: 90px;
+        height: 40px;
+        font-size: 25px;
+    }
+
+    .contenedorlistbuttons {
+        overflow: auto;
+    }
+
+    .listbutton {
+        width: 82px;
+        height: 82px;
+        font-size: 10px;
     }
 }
 
@@ -263,7 +323,7 @@ table {
     }
 
     .formLogin {
-        margin-top: 20px;
+        margin-top: 5px;
         font-size: 28px;
     }
 }
@@ -349,7 +409,7 @@ table {
     }
 
     .formLogin {
-        margin-top: 20px;
+        margin-top: 5px;
         font-size: 35px;
     }
 }

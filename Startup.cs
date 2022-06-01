@@ -11,6 +11,7 @@ using Syncfusion.Blazor;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using UserBlazorApp.Data;
+using Blazored.LocalStorage;
 
 namespace UserBlazorApp
 {
@@ -36,8 +37,8 @@ namespace UserBlazorApp
             services.AddHttpContextAccessor();
             services.AddHttpClient();
             services.AddBlazoredSessionStorage();
-            services.AddScoped<ICookie, Cookie>();
-            
+            services.AddBlazoredLocalStorage();
+
 
             // AddHttpClient permite enviar solicitudes y recibir respuestas HTTP de un recurso identificado por un URI.
             //services.AddHttpClient<IServiceUser, ServiceUser>(user =>

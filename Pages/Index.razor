@@ -9,7 +9,7 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-@inject ICookie cookie 
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <AuthorizeView>
     <Authorized>
@@ -23,6 +23,7 @@
                     <div class="contenedorvisores">
                         @*<p class="visorprecio">@nombreUsuario</p>*@
                         @*<p class="visorprecio">@nombreTerminal</p>*@
+                        @*<p>Cookie: @msgcookie</p>*@
                         <p class="visorprecio">@precioTotal€</p>
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
@@ -132,6 +133,7 @@
     private bool isButtonCategoriasClicked = false;
     string nombreUsuario = "";
     string nombreTerminal = "";
+    private string msgcookie;
     Terminal terminalActual { get; set; }
 
     //private bool categoriasClicked = false;
@@ -157,6 +159,8 @@
         {
             NavigationManager.NavigateTo("/");
         }
+
+        msgcookie = await localStorage.GetItemAsync<string>("idTerminal");
     }
 
     private async void obtenerNumMesa(int num)
