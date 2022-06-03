@@ -48,7 +48,7 @@
                             <button class="menubutton">Boton</button>
                         </div>
                         <div class="col-auto colmenubutton">
-                            <button class="menubutton" @onclick="showNumpadAgain">Volver a Numpad</button>
+                            <button class="menubutton" @onclick="showNumpadAgain">Guardar Mesa</button>
                         </div>
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
@@ -136,8 +136,7 @@
     Terminal terminalActual { get; set; }
     private int docId = 0;
     private bool isDialogContinueVisible = false;
-
-    //private bool categoriasClicked = false;
+    //private Documentos documento;
 
     // variable mensaje del popup (body)
     private string mensaje = "";
@@ -179,12 +178,7 @@
     public async Task getDocumentos()
     {
         //almacenamos en oRespuesta la respuesta que recibimos de la api
-        oRespuestaDocumentos = await Http.GetFromJsonAsync<Respuesta<List<Documentos>>>(Url + "/api/Mesa/" + numMesa);
-
-        if (oRespuestaDocumentos.Exito == 1)
-        {
-            docId = (int)oRespuestaDocumentos.Data[0].doc_id;
-        }
+        oRespuestaDocumentos = await Http.GetFromJsonAsync<Respuesta<List<Documentos>>>(Url + "/api/Mesa/" + numMesa + "/" + terminalActual.ter_id);
 
         // asigna a la variable false para indicar que no es visible, a la vez que la variable se asigna al parámetro del dialog
         isDialogInfoVisible = false;
@@ -206,6 +200,8 @@
         }
         else
         {
+            docId = (int)oRespuestaDocumentos.Data[0].doc_id;
+
             //almacenamos los datos de la respuesta en DocumentosEnum
             DocumentosEnum = (IEnumerable<Documentos>)oRespuestaDocumentos.Data;
         }
@@ -303,13 +299,23 @@
 
     private async Task LogoutUserRequest()
     {
-        // llama a LogOutAsync del servicio UserService, el cual se encarga de cerrar la sesión
-        await ServiceProvider.Get<UserService>().LogoutAsync();
+        isDialogInfoVisible = true;
+        if (numMesa == 0)
+        {
+            // llama a LogOutAsync del servicio UserService, el cual se encarga de cerrar la sesión
+            await ServiceProvider.Get<UserService>().LogoutAsync();
 
-        await updateTerminal(terminalActual, 0);
+            await updateTerminal(terminalActual, 0);
 
-        // una vez cierra la sesión, redirige a la página principal
-        NavigationManager.NavigateTo("/");
+            // una vez cierra la sesión, redirige a la página principal
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            headerMensaje = "Error";
+            mensaje = "Guarda la mesa primero para cerrar la sesión";
+            isDialogInfoVisible = true;
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -341,6 +347,7 @@
 
     private async Task showNumpadAgain()
     {
+        await updateMesa(oRespuestaDocumentos.Data[0], 0);
         oRespuestaDocumentos = new Respuesta<List<Documentos>>();
         numMesa = 0;
         ldocumentoFromGrid = null;
@@ -350,5 +357,12 @@
         isDialogContinueVisible = false;
         docId = 0;
         isButtonCategoriasClicked = false;
+    }
+
+    // método utilizado para bloquear o desbloquear el documento/mesa
+    private async Task updateMesa(Documentos doc, int bloq)
+    {
+        doc.doc_bloqueado = bloq;
+        await Http.PutAsJsonAsync<Documentos>(Url + "/api/Mesa", doc);
     }
 }
