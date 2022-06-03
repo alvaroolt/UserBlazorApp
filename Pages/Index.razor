@@ -28,11 +28,11 @@
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
                         <div class="col-auto colmenubutton">
-                            <button class="menubutton" @onclick="e => deleteDocumento(numMesa)"><img class="menuimg" src="images/deleteLine.png" /></button> @*evitar el ~/*@
+                            <button class="menubutton" @onclick="deleteDocumento"><img class="menuimg" src="images/deleteDocumento.png" /></button> @*evitar el ~/*@
                             @*<button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button>*@
                         </div>
                         <div class="col-auto colmenubutton">
-                            <button class="menubutton">Boton</button>
+                            <button class="menubutton" @onclick="deleteLineaDocumento"><img class="menuimg" src="images/deleteLinea.png" /></button>
                         </div>
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
@@ -48,7 +48,7 @@
                             <button class="menubutton">Boton</button>
                         </div>
                         <div class="col-auto colmenubutton">
-                            <button class="menubutton">Boton</button>
+                            <button class="menubutton" @onclick="showNumpadAgain">Volver a Numpad</button>
                         </div>
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
@@ -62,7 +62,7 @@
         </div>
         @*@if (ldocumentoFromGrid != null)
             {
-                <p>@ldocumentoFromGrid.ldoc_id</p>
+                <p>Id de linea: @ldocumentoFromGrid.ldoc_id</p>
             }*@
         @*<ListButton></ListButton>*@
 
@@ -78,13 +78,12 @@
             <Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
         }
 
-        @*<p>@continueFromSon</p>
-            <DialogContinueOperation continueToFather="obtenerSiContinue" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinueOperation>*@
+        <DialogContinue isDialogVisible="@isDialogContinueVisible" continueToFather="continueOperation" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinue>
         <DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>
 
         <footer class="footer">
             <div class="col-auto contenedornavbutton">
-                <button class="btn btn-primary p-4 rounded-0 navbutton" @onclick="LogoutUserRequest">Salir</button>
+                <button class="btn btn-primary p-4 rounded-0 navbutton" @onclick="LogoutUserRequest"><img class="menuimg" src="images/salir.png" /></button>
             </div>
             <div class="col-auto contenedornavbutton">
                 <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
@@ -135,6 +134,8 @@
     string nombreTerminal = "";
     private string msgcookie;
     Terminal terminalActual { get; set; }
+    private int docId = 0;
+    private bool isDialogContinueVisible = false;
 
     //private bool categoriasClicked = false;
 
@@ -165,6 +166,7 @@
 
     private async void obtenerNumMesa(int num)
     {
+        isDialogInfoVisible = false;
         //almacenamos en numMesa el valor recibido en num, el cual Index recibe de Numpad
         numMesa = num;
         await getDocumentos();
@@ -178,6 +180,12 @@
     {
         //almacenamos en oRespuesta la respuesta que recibimos de la api
         oRespuestaDocumentos = await Http.GetFromJsonAsync<Respuesta<List<Documentos>>>(Url + "/api/Mesa/" + numMesa);
+
+        if (oRespuestaDocumentos.Exito == 1)
+        {
+            docId = (int)oRespuestaDocumentos.Data[0].doc_id;
+        }
+
         // asigna a la variable false para indicar que no es visible, a la vez que la variable se asigna al parámetro del dialog
         isDialogInfoVisible = false;
         // notifica al componente dialog que sus parametros han cambiado, para que se actualice
@@ -203,14 +211,37 @@
         }
     }
 
-    public async Task deleteDocumento(int mesaCode)
+    public async Task deleteDocumento()
     {
-        if (oRespuestaDocumentos.Exito == 1)
+        if (DocumentosEnum != null)
         {
-            await Http.DeleteAsync(Url + "/api/Mesa/" + numMesa);
-            oRespuestaDocumentos = null;
-            DocumentosEnum = null;
-            StateHasChanged();
+            isDialogContinueVisible = true;
+            headerMensaje = "Aviso";
+            mensaje = "Estás a punto de borrar el documento de la mesa " + numMesa + ". ¿Deseas continuar?";
+            //StateHasChanged();
+        }
+        else
+        {
+            isDialogInfoVisible = true;
+            headerMensaje = "Error";
+            mensaje = "Introduce una mesa";
+        }
+    }
+
+    public async Task deleteLineaDocumento()
+    {
+        if (oRespuestaDocumentos.Exito == 1 && ldocumentoFromGrid != null)
+        {
+            await Http.DeleteAsync(Url + "/api/Ldocumento/" + ldocumentoFromGrid.ldoc_id);
+            await getDocumentos();
+
+            ldocumentoFromGrid = null;
+        }
+        else
+        {
+            isDialogInfoVisible = true;
+            headerMensaje = "Error";
+            mensaje = "Selecciona una línea que eliminar";
         }
     }
 
@@ -226,15 +257,41 @@
 
     void obtenerLdocumentoFromGrid(Ldocumentos ldocumento)
     {
+        isDialogInfoVisible = false;
         ldocumentoFromGrid = ldocumento;
     }
 
-    // variable que obtiene información de dialog (boolean para continuar o no)
-    private async void obtenerSiContinue(bool x)
+
+    private async Task continueOperation(bool boolContinueOperation)
     {
-        //almacenamos en numMesa el valor recibido en num, el cual Index recibe de Numpad
-        continueFromSon = x;
+        isDialogContinueVisible = false;
+        isDialogInfoVisible = false;
         StateHasChanged();
+
+        if (oRespuestaDocumentos.Exito == 1)
+        {
+
+            if (boolContinueOperation)
+            {
+                await Http.DeleteAsync(Url + "/api/Mesa/" + docId);
+                oRespuestaDocumentos = null;
+                DocumentosEnum = null;
+                StateHasChanged();
+            }
+
+        }
+        else
+        {
+            // asigna true a la variable para que se muestre el dialog
+            isDialogInfoVisible = true;
+            // se asigna a mensaje el mensaje de error recibido de la respuesta y el número de mesa en concreto
+            mensaje = "Selecciona una mesa para eliminar";
+            // indica a los componentes hijos que sus valores han cambiado para que se actualicen
+            StateHasChanged();
+        }
+
+        StateHasChanged();
+
     }
 
     // notifica que se ha clicado Categorías al componente que lista las categorías
@@ -280,5 +337,18 @@
     {
         ter.ter_bloqueado = bloq;
         await Http.PutAsJsonAsync<Terminal>(Url + "/api/Terminal", ter);
+    }
+
+    private async Task showNumpadAgain()
+    {
+        oRespuestaDocumentos = new Respuesta<List<Documentos>>();
+        numMesa = 0;
+        ldocumentoFromGrid = null;
+        DocumentosEnum = null;
+        precioTotal = 0;
+        isDialogInfoVisible = false;
+        isDialogContinueVisible = false;
+        docId = 0;
+        isButtonCategoriasClicked = false;
     }
 }

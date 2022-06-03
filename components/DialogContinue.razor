@@ -14,20 +14,21 @@
         <DialogButton Content="Continuar" OnClick="(() => OnDialogBtnClick(true))" />
     </DialogButtons>
 </SfDialog>
-<SfButton @onclick="@OnOpenBtnClick">Open Dialog</SfButton>
+@*<SfButton @onclick="@OnOpenBtnClick">Open Dialog</SfButton>*@
 
 @code {
-    //dialogComponent recibe el parámetro headerMensaje, el cual es un string para escribir en el header del dialog
+    //dialogContinue recibe el parámetro headerMensaje, el cual es un string para escribir en el header del dialog
     [Parameter]
     public string headerMensaje { get; set; }
-    //dialogComponent recibe el parámetro mensaje, el cual es un string para escribir en el body del dialog
+    //dialogContinue recibe el parámetro mensaje, el cual es un string para escribir en el body del dialog
     [Parameter]
     public string mensaje { get; set; }
     // info que se le pasa al componente padre (en este caso un boolean para continuar con la operación)
     [Parameter]
     public EventCallback<bool> continueToFather { get; set; }
     // asigna como valor inicial el si es visible en true
-    private bool isDialogVisible { get; set; } = true;
+    [Parameter]
+    public bool isDialogVisible { get; set; } = true;
 
     // método que le asigna a isDialogVisible el valor false
     private void OnDialogBtnClick(bool continueTask)
@@ -46,8 +47,8 @@
     }
 
     // método para establecer el dialog como visible y que así aparezca
-    private void OnOpenBtnClick()
-    {
-        isDialogVisible = true;
-    }
+    //private void OnOpenBtnClick()
+    //{
+    //    isDialogVisible = true;
+    //}
 }

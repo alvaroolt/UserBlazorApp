@@ -218,6 +218,10 @@ table {
     border-radius: 15px;
 }
 
+.contenedornavbutton .menuimg {
+    width: 30px;
+}
+
 @media (max-width: 361px) {
     .contenedorgrid {
         max-height: 53px;
@@ -326,6 +330,10 @@ table {
         margin-top: 5px;
         font-size: 28px;
     }
+
+    .contenedornavbutton .menuimg {
+        width: 40px;
+    }
 }
 
 @media (min-width: 1000px) {
@@ -411,5 +419,9 @@ table {
     .formLogin {
         margin-top: 5px;
         font-size: 35px;
+    }
+
+    .contenedornavbutton .menuimg {
+        width: 45px;
     }
 }
