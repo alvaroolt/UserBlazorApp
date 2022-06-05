@@ -59,7 +59,7 @@ namespace UserBlazorApp
             //});
             services.AddSingleton(new HttpClient
             {
-                BaseAddress = new Uri("http://192.168.1.185:44322")
+                BaseAddress = new Uri("https://localhost:44322")
             });
             services.AddSyncfusionBlazor(); // agrega el servicio de Syncfusion para Blazor
         }
