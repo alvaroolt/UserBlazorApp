@@ -2,8 +2,8 @@
 
 <div class="contenedornumpad">
     <div class="contenedorvisornumpad">
-        <label for="visornumpad">Selección de mesa</label>
-        <input type="text" id="visornumpad" value="@value" disabled/>
+        <label for="visornumpad">Seleccionar operación</label>
+        <input type="text" id="visornumpad" value="@value" disabled />
     </div>
     <div class="numpads">
         <div class="row justify-content-md-center rownumpad">
@@ -18,7 +18,7 @@
             </div>
             <div class="colnumpad">
                 @* llamamos al evento callback numMesaToIndex, que se encarga de enviar los números tecleados (parseados a int en vez de string) *@
-                <button class="numpadlargebutton" @onclick="checkAndSendValue"><img class="menuimg" src="images/salonangel.png" /></button>
+                <button class="numpadlargebutton">TRSP</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
@@ -32,7 +32,7 @@
                 <button class="numpadbutton" @onclick="e => typeKey(6)">6</button>
             </div>
             <div class="colnumpad">
-                <button class="numpadlargebutton"></button>
+                <button class="numpadlargebutton">A</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
@@ -46,7 +46,7 @@
                 <button class="numpadbutton" @onclick="e => typeKey(3)">3</button>
             </div>
             <div class="colnumpad">
-                <button class="numpadlargebutton"></button>
+                <button class="numpadlargebutton" @onclick="checkAndSendCantidad">CANT</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
@@ -54,13 +54,13 @@
                 <button class="numpadbutton" @onclick="e => typeKey(0)">0</button>
             </div>
             <div class="colnumpad">
-                <button class="numpadbutton" @onclick="e => typeKey(-3)">,</button>
+                <button class="numpadbutton" @onclick="e => typeKey(-2)">,</button>
             </div>
             <div class="colnumpad">
-                <button class="numpadbutton" @onclick="e => typeKey(-2)">C</button>
+                <button class="numpadbutton" style="color:red" @onclick="e => typeKey(-1)">C</button>
             </div>
             <div class="colnumpad">
-                <button class="numpadlargebutton" @onclick="e => typeKey(-1)"><img class="menuimg" src="images/flechazulizquierda.png" /></button>
+                <button class="numpadlargebutton" @onclick="checkAndSendPrecio">PREC</button>
             </div>
         </div>
     </div>
@@ -69,7 +69,9 @@
 @code {
     // parametro que se pasa al componente padre (index)
     [Parameter]
-    public EventCallback<int> numMesaToIndex { get; set; }
+    public EventCallback<int> cantidadToIndex { get; set; }
+    [Parameter]
+    public EventCallback<int> precioToIndex { get; set; }
 
     // variable que almacena el número que se escribe con los botones de numpad
     private string value = "";
@@ -103,17 +105,9 @@
                 value += key.ToString().Trim();
                 break;
             case -1:
-                if (value.Length > 0)
-                {
-                    string newvalue = "";
-                    newvalue = value.Remove(value.LastIndexOf("")).Trim();
-                    value = newvalue;
-                }
-                break;
-            case -2:
                 value = "";
                 break;
-            case -3:
+            case -2:
                 //agregar condición que impida más de un , en el string
                 if (value.Substring(value.Length - 1) != ",")
                 {
@@ -123,12 +117,21 @@
         }
     }
 
-    private void checkAndSendValue()
+    private void checkAndSendCantidad()
     {
         // comprueba que el valor que se envía al componente padre no sea una cadena vacía
         if (value != "")
         {
-            numMesaToIndex.InvokeAsync(Int32.Parse(value));
+            cantidadToIndex.InvokeAsync(Int32.Parse(value));
+        }
+    }
+
+    private void checkAndSendPrecio()
+    {
+        // comprueba que el valor que se envía al componente padre no sea una cadena vacía
+        if (value != "")
+        {
+            precioToIndex.InvokeAsync(Int32.Parse(value));
         }
     }
 }

@@ -6,6 +6,8 @@
 @using System.Net.Http;
 @using System.Net.Http.Json;
 @inject HttpClient Http
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 @if (ArticulosEnum != null)
 {
@@ -22,7 +24,7 @@
                 nombre = art.art_nom_corto; ;
             }
             <div class="collistbutton">
-                <button class="listbutton" type="button" href="#" name="@art.art_id">@nombre</button>
+                <button class="listbutton" type="button" href="#" name="@art.art_id" @onclick="e => selectArticle(art.art_id)">@nombre</button>
             </div>
         }
     </div>
@@ -31,6 +33,9 @@
 @code {
     [Parameter]
     public int numFam { get; set; }
+
+    [Parameter]
+    public EventCallback<int> idArticuloToFather { get; set; }
 
     public string Url = "https://localhost:44322";
     Respuesta<List<Articulos>> oRespuestaArticulos = new Respuesta<List<Articulos>>();
@@ -47,5 +52,46 @@
     {
         oRespuestaArticulos = await Http.GetFromJsonAsync<Respuesta<List<Articulos>>>(Url + "/api/Articulos/" + numFam);
         ArticulosEnum = (IEnumerable<Articulos>)oRespuestaArticulos.Data;
+    }
+
+    private void selectArticle(int idArticulo)
+    {
+        idArticuloToFather.InvokeAsync(idArticulo);
+
+        //Articulos objArticulo = ArticulosEnum.FirstOrDefault(x => x.art_id == idArticulo);
+        //IEnumerable<Documentos> objDocumento = await localStorage.GetItemAsync<IEnumerable<Documentos>>("LSdocumento");
+
+        //int idDocumento = 0;
+        //int numMesa = 0;
+        //int idTerminal = await localStorage.GetItemAsync<int>("idTerminal");
+        //int idUsuario = await sessionStorage.GetItemAsync<int>("usuario");
+        //foreach (var item in objDocumento)
+        //{
+        //    idDocumento = (int)item.doc_id;
+        //    numMesa = item.doc_mesa;
+        //}
+
+        //Ldocumentos objLdocumento = new Ldocumentos();
+        //objLdocumento.ldoc_doc_id = idDocumento;
+        //objLdocumento.ldoc_tipo = "A";
+        //objLdocumento.ldoc_linea = ;
+        //objLdocumento.ldoc_art_id = idArticulo;
+        //objLdocumento.ldoc_descripcion = objArticulo.art_nom;
+        //objLdocumento.ldoc_cantidad = 1;
+        //objLdocumento.ldoc_importe_pvp = 0;
+        //objLdocumento.ldoc_dto = 0;
+        //objLdocumento.ldoc_cdto = 0;
+        //objLdocumento.ldoc_importe = 0;
+        //objLdocumento.ldoc_importe_pvp = 0;
+        //objLdocumento.ldoc_iva = 0;
+        //objLdocumento.ldoc_civa = 0;
+        //objLdocumento.ldoc_tipo_iva = objArticulo.art_tipo_iva;
+        //objLdocumento.ldoc_cant_prn = 1;
+        //objLdocumento.ldoc_ter_id = idTerminal;
+        //objLdocumento.ldoc_varia_notas = null;
+        //objLdocumento.ldoc_err_prn = 1;
+        //objLdocumento.ldoc_usuario = idUsuario;
+
+        //objldocumento.
     }
 }

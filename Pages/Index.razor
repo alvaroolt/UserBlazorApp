@@ -3,6 +3,7 @@
 @using UserBlazorApp.components;
 @using WebServiceApiRest.Models;
 @using WebServiceApiRest.Models.Response;
+@using System.Collections;
 @using System.Net.Http;
 @using System.Net.Http.Json;
 @using Newtonsoft.Json;
@@ -28,32 +29,32 @@
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
                         <div class="col-auto colmenubutton">
-                            <button class="menubutton" @onclick="deleteDocumento"><img class="menuimg" src="images/deleteDocumento.png" /></button> @*evitar el ~/*@
-                            @*<button class="menubutton"><img class="menuimg" src="images/deleteLine.png" /></button>*@
+                            <button class="menubutton"><img class="menuimg" src="images/nota.png" /></button>
                         </div>
                         <div class="col-auto colmenubutton">
+                            <button class="menubutton"><img class="menuimg" src="images/pagar.png" /></button>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center rowmenubuttons">
+                        <div class="col-auto colmenubutton">
+                            @*evitar el ~/ ya que no muestra la imagen correctamente*@
                             <button class="menubutton" @onclick="deleteLineaDocumento"><img class="menuimg" src="images/deleteLinea.png" /></button>
                         </div>
-                    </div>
-                    <div class="row justify-content-md-center rowmenubuttons">
                         <div class="col-auto colmenubutton">
-                            <button class="menubutton">Boton</button>
-                        </div>
-                        <div class="col-auto colmenubutton">
-                            <button class="menubutton">Boton</button>
+                            <button class="menubutton" @onclick="deleteDocumento"><img class="menuimg" src="images/deleteDocumento.png" /></button>
                         </div>
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
                         <div class="col-auto colmenubutton">
-                            <button class="menubutton">Boton</button>
+                            <button class="menubutton">Trasp. Mesa</button>
                         </div>
                         <div class="col-auto colmenubutton">
-                            <button class="menubutton" @onclick="showNumpadAgain">Guardar Mesa</button>
+                            <button class="menubutton" @onclick="showNumpadAgain"><img class="menuimg" src="images/salonangel.png" /></button>
                         </div>
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
                         <div class="col-auto">
-                            <button @onclick="checkButtonCategoriasClicked" class="menubutton categorybutton">Categorías</button>
+                            <button @onclick="checkButtonCategoriasClicked" class="menubutton categorybutton backgroundblue">Categorías</button>
                             @*<button class="menubutton categorybutton">Categorías</button>*@
                         </div>
                     </div>
@@ -61,22 +62,36 @@
             </div>
         </div>
         @*@if (ldocumentoFromGrid != null)
-            {
-                <p>Id de linea: @ldocumentoFromGrid.ldoc_id</p>
-            }*@
+        {
+            <p>Id de linea: @ldocumentoFromGrid.ldoc_id</p>
+        }*@
         @*<ListButton></ListButton>*@
 
         @*llamamos al teclado numérico*@
 
         @*@if (numMesa != 0 || categoriasClicked)*@
+        @*@if (idArticulo != 0)
+            {
+                <p>Id del articulo: @idArticulo</p>
+            }*@
         @if (numMesa != 0)
         {
-            <ListButtonCategorias buttonCategoriasClicked="@isButtonCategoriasClicked"></ListButtonCategorias>
+            if (ldocumentoFromGrid != null)
+            {
+                <NumpadLineas cantidadToIndex="obtenerCantidadLinea" precioToIndex="obtenerPrecioLinea"></NumpadLineas>
+                @*<p>@numCantidad</p>*@
+            }
+            else
+            {
+                <ListButtonCategorias buttonCategoriasClicked="@isButtonCategoriasClicked" idArticuloToFather="obtenerIdArticuloFromSon"></ListButtonCategorias>
+            }
         }
         else
         {
             <Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
         }
+        @*<NumpadLineas cantidadToIndex="obtenerCantidadLinea"></NumpadLineas>
+            <p>@numCantidad</p>*@
 
         <DialogContinue isDialogVisible="@isDialogContinueVisible" continueToFather="continueOperation" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinue>
         <DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>
@@ -86,19 +101,19 @@
                 <button class="btn btn-primary p-4 rounded-0 navbutton" @onclick="LogoutUserRequest"><img class="menuimg" src="images/salir.png" /></button>
             </div>
             <div class="col-auto contenedornavbutton">
-                <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+                <button class="btn btn-primary p-4 rounded-0 navbutton"><img class="menuimg" src="images/masmenos.png" /></button>
             </div>
             <div class="col-auto contenedornavbutton">
-                <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+                <button class="btn btn-primary p-4 rounded-0 navbutton"></button>
             </div>
             <div class="col-auto contenedornavbutton">
-                <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+                <button class="btn btn-primary p-4 rounded-0 navbutton"></button>
             </div>
             <div class="col-auto contenedornavbutton">
-                <button class="btn btn-primary p-4 rounded-0 navbutton">Boton</button>
+                <button class="btn btn-primary p-4 rounded-0 navbutton"></button>
             </div>
             <div class="col-auto contenedornavbutton">
-                <p class="visormesa">Mesa nº @numMesa</p>
+                <p class="visormesa">Mesa: @numMesa</p>
             </div>
         </footer>
     </Authorized>
@@ -125,7 +140,7 @@
     //lista de artículos correspondiente a la mesa
     public IEnumerable<Documentos> DocumentosEnum { get; set; }
     //precio total de los artículos de la mesa
-    private double precioTotal = 0;
+    private decimal precioTotal = 0;
     // declara el valor visible del componente dialog en false
     private bool isDialogInfoVisible = false;
     // boolean que controla la visibilidad de las categorías
@@ -136,7 +151,8 @@
     Terminal terminalActual { get; set; }
     private int docId = 0;
     private bool isDialogContinueVisible = false;
-    //private Documentos documento;
+    private int idArticulo = 0;
+    private int numCantidad = 0;
 
     // variable mensaje del popup (body)
     private string mensaje = "";
@@ -161,6 +177,9 @@
         }
 
         msgcookie = await localStorage.GetItemAsync<string>("idTerminal");
+
+        string s = String.Format("{0:N2}", precioTotal);
+        precioTotal = Convert.ToDecimal(s);
     }
 
     private async void obtenerNumMesa(int num)
@@ -168,9 +187,34 @@
         isDialogInfoVisible = false;
         //almacenamos en numMesa el valor recibido en num, el cual Index recibe de Numpad
         numMesa = num;
+
         await getDocumentos();
         await getPrecio();
-        //necesario para que el componente grid sepa que el objeto que recibe como parámetro ha cambiado y así actualizarse
+        //NECESARIO PARA ACTUALIZAR GRID
+        StateHasChanged();
+    }
+
+    private async void obtenerCantidadLinea(int num)
+    {
+        isDialogInfoVisible = false;
+        ldocumentoFromGrid.ldoc_cantidad = num;
+
+        await Http.PutAsJsonAsync<Ldocumentos>(Url + "/api/Ldocumento", ldocumentoFromGrid);
+        ldocumentoFromGrid = null;
+        await getDocumentos();
+        await getPrecio();
+        StateHasChanged();
+    }
+
+    private async void obtenerPrecioLinea(int num)
+    {
+        isDialogInfoVisible = false;
+        ldocumentoFromGrid.ldoc_importe_pvp = num;
+
+        await Http.PutAsJsonAsync<Ldocumentos>(Url + "/api/Ldocumento", ldocumentoFromGrid);
+        ldocumentoFromGrid = null;
+        await getDocumentos();
+        await getPrecio();
         StateHasChanged();
     }
 
@@ -183,20 +227,20 @@
         // asigna a la variable false para indicar que no es visible, a la vez que la variable se asigna al parámetro del dialog
         isDialogInfoVisible = false;
         // notifica al componente dialog que sus parametros han cambiado, para que se actualice
-        StateHasChanged();
+        //StateHasChanged();
         // entra en el if si no hubo éxito (no existe la mesa especificada)
         if (oRespuestaDocumentos.Exito == 0)
         {
             // asigna true a la variable para que se muestre el dialog
             isDialogInfoVisible = true;
             // se asigna a mensaje el mensaje de error recibido de la respuesta y el número de mesa en concreto
-            mensaje = oRespuestaDocumentos.Mensaje + " - " + numMesa;
+            mensaje = oRespuestaDocumentos.Mensaje;
             // una vez se muestra el mensaje, se asignan los valores por defecto
             numMesa = 0;
             precioTotal = 0;
             DocumentosEnum = null;
-            // indica a los componentes hijos que sus valores han cambiado para que se actualicen
-            StateHasChanged();
+            // ACTUALIZA GRID
+            //StateHasChanged();
         }
         else
         {
@@ -204,6 +248,8 @@
 
             //almacenamos los datos de la respuesta en DocumentosEnum
             DocumentosEnum = (IEnumerable<Documentos>)oRespuestaDocumentos.Data;
+            await localStorage.SetItemAsync("LSdocumento", DocumentosEnum);
+            //IEnumerable<Documentos> x = await localStorage.GetItemAsync<IEnumerable<Documentos>>("LSdocumento");
         }
     }
 
@@ -228,10 +274,12 @@
     {
         if (oRespuestaDocumentos.Exito == 1 && ldocumentoFromGrid != null)
         {
-            await Http.DeleteAsync(Url + "/api/Ldocumento/" + ldocumentoFromGrid.ldoc_id);
+            await Http.DeleteAsync(Url + "/api/Ldocumento/" + ldocumentoFromGrid.ldoc_id + "/" + ldocumentoFromGrid.ldoc_art_id + "/" + numMesa);
             await getDocumentos();
+            await getPrecio();
 
             ldocumentoFromGrid = null;
+            StateHasChanged();
         }
         else
         {
@@ -246,8 +294,10 @@
         //obtenemos el precio total de la mesa solo si hubo éxito en la respuesta y hay datos en ella
         if (oRespuestaDocumentos.Exito == 1 && oRespuestaDocumentos.Data != null)
         {
-            precioTotal = oRespuestaDocumentos.Data[0].doc_total;
-            precioTotal = Math.Round(precioTotal, 2);
+            precioTotal = Convert.ToDecimal(oRespuestaDocumentos.Data[0].doc_total);
+            //precioTotal = Math.Round(precioTotal, 2);
+            string s = String.Format("{0:N2}", precioTotal);
+            precioTotal = Convert.ToDecimal(s);
         }
     }
 
@@ -272,6 +322,10 @@
                 await Http.DeleteAsync(Url + "/api/Mesa/" + docId);
                 oRespuestaDocumentos = null;
                 DocumentosEnum = null;
+                //await getPrecio();
+                precioTotal = 0;
+                string s = String.Format("{0:N2}", precioTotal);
+                precioTotal = Convert.ToDecimal(s);
                 StateHasChanged();
             }
 
@@ -293,8 +347,8 @@
     // notifica que se ha clicado Categorías al componente que lista las categorías
     private async Task checkButtonCategoriasClicked()
     {
-        isButtonCategoriasClicked = !isButtonCategoriasClicked;
-        StateHasChanged();
+        isButtonCategoriasClicked = true;
+        //StateHasChanged();
     }
 
     private async Task LogoutUserRequest()
@@ -320,6 +374,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (isButtonCategoriasClicked)
+        {
+            isButtonCategoriasClicked = false;
+        }
+
         // recupera en user la información de usuario utilizando SessionStorage
         var user = await sessionStorage.GetItemAsync<string>("usuario");
         terminalActual = await sessionStorage.GetItemAsync<Terminal>("terminal");
@@ -347,7 +406,11 @@
 
     private async Task showNumpadAgain()
     {
-        await updateMesa(oRespuestaDocumentos.Data[0], 0);
+        if (oRespuestaDocumentos != null && oRespuestaDocumentos.Exito == 1)
+        {
+            await updateMesa(oRespuestaDocumentos.Data[0], 0);
+        }
+
         oRespuestaDocumentos = new Respuesta<List<Documentos>>();
         numMesa = 0;
         ldocumentoFromGrid = null;
@@ -357,12 +420,36 @@
         isDialogContinueVisible = false;
         docId = 0;
         isButtonCategoriasClicked = false;
+        idArticulo = 0;
     }
 
     // método utilizado para bloquear o desbloquear el documento/mesa
     private async Task updateMesa(Documentos doc, int bloq)
     {
         doc.doc_bloqueado = bloq;
-        await Http.PutAsJsonAsync<Documentos>(Url + "/api/Mesa", doc);
+
+        if (doc.listdoc == null || doc.listdoc.Count != 0)
+        {
+            await Http.PutAsJsonAsync<Documentos>(Url + "/api/Mesa", doc);
+        }
+        else
+        {
+            await Http.DeleteAsync(Url + "/api/Mesa/" + docId);
+        }
+
+    }
+
+    private async void obtenerIdArticuloFromSon(int num)
+    {
+        idArticulo = num;
+
+        ArrayList paramList = new ArrayList();
+        paramList.Add(idArticulo);
+        paramList.Add(numMesa);
+        paramList.Add(terminalActual.ter_id);
+        await Http.PostAsJsonAsync(Url + "/api/Ldocumento", paramList);
+        await getDocumentos();
+        await getPrecio();
+        StateHasChanged();
     }
 }

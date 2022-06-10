@@ -3,10 +3,18 @@
 @using UserBlazorApp.components;
 @using WebServiceApiRest.Models;
 @using WebServiceApiRest.Models.Response;
-@using System.Net.Http; 
+@using System.Net.Http;
 @using System.Net.Http.Json;
 @inject HttpClient Http
-@if (_isVisible)
+
+@if (buttonCategoriasClicked)
+{
+    idArticuloFromSon = 0;
+    _isVisible = true;
+    numFam = 0;
+    buttonCategoriasClicked = false;
+}
+@if (_isVisible && idArticuloFromSon == 0)
 {
     @if (CategoriasEnum == null)
     {
@@ -25,20 +33,25 @@
     }
 }
 
-<ListButtonArticulos @ref="listcategories" numFam="@numFam"></ListButtonArticulos>
+
+<ListButtonArticulos @ref="listcategories" numFam="@numFam" idArticuloToFather="pasarIdArticuloAIndex"></ListButtonArticulos>
 
 @code {
     [Parameter]
     public bool buttonCategoriasClicked { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<int> idArticuloToFather { get; set; }
 
     public string Url = "https://localhost:44322";
     Respuesta<List<Familias_art>> oRespuestaCategorias = new Respuesta<List<Familias_art>>();
 
     public IEnumerable<Familias_art> CategoriasEnum { get; set; }
 
-    private bool _isVisible = false;
+    private bool _isVisible;
     private int numFam;
     ListButtonArticulos listcategories;
+    private int idArticuloFromSon = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,8 +62,9 @@
     {
         // cada vez que sus parámetros se actualizan, comprueba la visibilidad del componente.
         // Si es false, lo muestra y asigna numFam a 0 para no visualizar ningún artículo
-        if (_isVisible == false)
+        if (_isVisible == false && idArticuloFromSon == 0)
         {
+
             _isVisible = !_isVisible;
             numFam = 0;
         }
@@ -70,5 +84,11 @@
     {
         _isVisible = !_isVisible;
         numFam = num;
+    }
+
+    private async void pasarIdArticuloAIndex(int num)
+    {
+        idArticuloFromSon = num;
+        await idArticuloToFather.InvokeAsync(num);
     }
 }

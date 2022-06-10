@@ -59,7 +59,7 @@
                 <button class="numpadbutton" @onclick="e => typeKey(-2)">C</button>
             </div>
             <div class="colnumpad">
-                <button class="numpadbutton" @onclick="e => typeKey(-1)">&#60;&#61;</button>
+                <button class="numpadbutton" @onclick="e => typeKey(-1)"><img class="menuimgLogin" src="images/flechazulizquierda.png" /></button>
             </div>
         </div>
     </div>
@@ -156,7 +156,7 @@
                 // se refresca el terminal actual, por si ha sido alterada la tabla de terminales en el proceso de iniciar sesión
                 terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == terminal.ter_id);
 
-                if (terminal.ter_bloqueado == 0)
+                if (terminal.ter_bloqueado == 0 || (terminal.ter_bloqueado == 1 && idTerminalLocalStorage == terminal.ter_id))
                 {
                     // llama al método de iniciar sesión del servicio UserService
                     await ServiceProvider.Get<UserService>().LoginAsync(usuario);

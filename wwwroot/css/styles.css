@@ -68,7 +68,7 @@ table {
 }
 
 .categorybutton {
-    width: 85px !important;
+    width: 100px !important;
 }
 
 .contenedorlistbuttons {
@@ -105,13 +105,15 @@ table {
     line-height: normal;
     font-size: 13px;
     width: max-content;
-    border: 2px solid black;
+    border: 1px solid black;
     padding: 0 2%;
     margin: auto;
+    transform: scaleY(1.6);
+    background-color: yellowgreen;
 }
 
 .contenedornavbutton {
-    margin: 0 auto;
+    margin: auto;
     padding: 0 !important;
 }
 
@@ -189,6 +191,11 @@ table {
     border-radius: 10px;
 }
 
+    .numpadlargebutton img {
+        vertical-align: text-top;
+        width: 32px;
+    }
+
 .formLogin {
     margin-top: 5px;
     font-size: 18px;
@@ -222,6 +229,19 @@ table {
     width: 30px;
 }
 
+.backgroundblue {
+    color: white;
+    background-color: royalblue;
+}
+
+.menuimgLogin {
+    width: 25px;
+}
+
+    .menuimgLogin img {
+        vertical-align: initial;
+    }
+
 @media (max-width: 361px) {
     .contenedorgrid {
         max-height: 53px;
@@ -230,9 +250,6 @@ table {
 
 /* DIMENSIONES PARA XIAOMI REDMI NOTE 4*/
 @media (min-width: 355px) and (max-width: 365px) and (min-height: 600px) and (max-height: 620px) {
-    /*.padreindex {
-        background-color: red;
-    }*/
 
     .contenedorgrid {
         max-height: 287px;
@@ -280,6 +297,19 @@ table {
         height: 82px;
         font-size: 10px;
     }
+
+    .numpadlargebutton img {
+        vertical-align: text-top;
+        width: 25px;
+    }
+
+    .menuimgLogin {
+        width: 25px;
+    }
+
+        .menuimgLogin img {
+            vertical-align: initial !important;
+        }
 }
 
 @media (min-width: 700px) and (max-width: 999px) {
@@ -324,6 +354,7 @@ table {
 
     .visormesa {
         font-size: 20px;
+        background-color: yellowgreen;
     }
 
     .formLogin {
@@ -334,6 +365,19 @@ table {
     .contenedornavbutton .menuimg {
         width: 40px;
     }
+
+    .numpadlargebutton img {
+        vertical-align: text-top;
+        width: 60px;
+    }
+
+    .menuimgLogin {
+        width: 40px;
+    }
+
+        .menuimgLogin img {
+            vertical-align: initial;
+        }
 }
 
 @media (min-width: 1000px) {
@@ -364,7 +408,7 @@ table {
         }
 
     .categorybutton {
-        width: 130px !important;
+        width: 190px !important;
     }
 
     .listbutton {
@@ -424,4 +468,17 @@ table {
     .contenedornavbutton .menuimg {
         width: 45px;
     }
+
+    .numpadlargebutton img {
+        vertical-align: text-top;
+        width: 85px;
+    }
+
+    .menuimgLogin {
+        width: 58px;
+    }
+
+        .menuimgLogin img {
+            vertical-align: initial;
+        }
 }

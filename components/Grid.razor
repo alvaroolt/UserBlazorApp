@@ -3,13 +3,13 @@
 <SfGrid DataSource="ldocumento" Height="100%">
     <GridPageSettings PageSize="1000"></GridPageSettings>
     <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" PersistSelection="true"></GridSelectionSettings>
-    <GridEditSettings NewRowPosition="NewRowPosition.Bottom"></GridEditSettings>
+    <GridEditSettings NewRowPosition="NewRowPosition.Top"></GridEditSettings>
     <GridTemplates>
         <EmptyRecordTemplate>
             <span></span>
         </EmptyRecordTemplate>
     </GridTemplates>
-    <GridEvents RowSelected="RowSelectHandler" TValue="Ldocumentos"></GridEvents>
+    <GridEvents RowDeselected="RowDeselectHandler" RowSelected="RowSelectHandler" TValue="Ldocumentos"></GridEvents>
     <GridColumns>
         <GridColumn Field="@(nameof(Ldocumentos.ldoc_cantidad))" AutoFit="true" />
         <GridColumn Field="@(nameof(Ldocumentos.ldoc_descripcion))" Width="90%" />
@@ -37,6 +37,9 @@
             // si el documento está vacío, obtiene las líneas de un objeto vacío con la intención de "limpiar" el grid
             await getDocumentos(null);
         }
+
+        //int topRowIndex = this.gridGroupingControl1.TableControl.ViewLayout.LastVisibleRow - this.gridGroupingControl1.TableControl.TopRowIndex - 1;
+        //this.gridGroupingControl1.TableControl.SetTopRow(this.gridGroupingControl1.TableModel.RowCount - topRowIndex);
         await base.OnParametersSetAsync();
     }
 
@@ -49,7 +52,8 @@
             {
                 ldocumento = doc.listdoc;
             }
-        } else
+        }
+        else
         {
             // si getDocumentos ha recibido un argumento vacío, asigna a documento y a las líneas un valor nulo
             ldocumento = null;
@@ -62,5 +66,10 @@
     {
         var CustomerIDValue = args.Data;
         ldocumentoToIndex.InvokeAsync(CustomerIDValue);
+    }
+
+    public void RowDeselectHandler()
+    {
+        ldocumentoToIndex.InvokeAsync(null);
     }
 }
