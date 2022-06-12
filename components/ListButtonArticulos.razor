@@ -1,6 +1,4 @@
-﻿@*<h3>ListButtonCategorias</h3>*@
-
-@using UserBlazorApp.components;
+﻿@using UserBlazorApp.components;
 @using WebServiceApiRest.Models;
 @using WebServiceApiRest.Models.Response;
 @using System.Net.Http;
@@ -8,7 +6,7 @@
 @inject HttpClient Http
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-
+@* en caso de que la lista de artículos esté vacía, espera hasta que haya *@
 @if (ArticulosEnum != null)
 {
     <div class="contenedorlistbuttons">
@@ -31,67 +29,38 @@
 }
 
 @code {
+    // recibe el número de familia de ListButtonCategorias, necesario para realizar la solicitud HTTP y
+    // obtener los artículos de esa familia
     [Parameter]
     public int numFam { get; set; }
-
+    // pasa el id del artículo clicado al componente ListButtonCategorias
     [Parameter]
     public EventCallback<int> idArticuloToFather { get; set; }
-
-    public string Url = "https://localhost:44322";
+    // Url necesaria para hacer solicitudes HTTP
+    public string Url = "http://192.168.1.185:44322";
+    // instancia de Respuesta que almacena una lista de artículos en su Data, para mostrárselos al usuario
+    // y elegir qué artículo se añade al documento
     Respuesta<List<Articulos>> oRespuestaArticulos = new Respuesta<List<Articulos>>();
-
+    // lista de artículos
     public IEnumerable<Articulos> ArticulosEnum { get; set; }
 
+    // este método se ejecuta siempre en la carga inicial del componente
     protected override async Task OnParametersSetAsync()
     {
         await getArticulos();
         await base.OnParametersSetAsync();
     }
 
+    // solicitud HTTP GET para obtener los artículos de la BD
     public async Task getArticulos()
     {
         oRespuestaArticulos = await Http.GetFromJsonAsync<Respuesta<List<Articulos>>>(Url + "/api/Articulos/" + numFam);
         ArticulosEnum = (IEnumerable<Articulos>)oRespuestaArticulos.Data;
     }
 
+    // envía el id del artículo escogido al componente ListButtonCategorias
     private void selectArticle(int idArticulo)
     {
         idArticuloToFather.InvokeAsync(idArticulo);
-
-        //Articulos objArticulo = ArticulosEnum.FirstOrDefault(x => x.art_id == idArticulo);
-        //IEnumerable<Documentos> objDocumento = await localStorage.GetItemAsync<IEnumerable<Documentos>>("LSdocumento");
-
-        //int idDocumento = 0;
-        //int numMesa = 0;
-        //int idTerminal = await localStorage.GetItemAsync<int>("idTerminal");
-        //int idUsuario = await sessionStorage.GetItemAsync<int>("usuario");
-        //foreach (var item in objDocumento)
-        //{
-        //    idDocumento = (int)item.doc_id;
-        //    numMesa = item.doc_mesa;
-        //}
-
-        //Ldocumentos objLdocumento = new Ldocumentos();
-        //objLdocumento.ldoc_doc_id = idDocumento;
-        //objLdocumento.ldoc_tipo = "A";
-        //objLdocumento.ldoc_linea = ;
-        //objLdocumento.ldoc_art_id = idArticulo;
-        //objLdocumento.ldoc_descripcion = objArticulo.art_nom;
-        //objLdocumento.ldoc_cantidad = 1;
-        //objLdocumento.ldoc_importe_pvp = 0;
-        //objLdocumento.ldoc_dto = 0;
-        //objLdocumento.ldoc_cdto = 0;
-        //objLdocumento.ldoc_importe = 0;
-        //objLdocumento.ldoc_importe_pvp = 0;
-        //objLdocumento.ldoc_iva = 0;
-        //objLdocumento.ldoc_civa = 0;
-        //objLdocumento.ldoc_tipo_iva = objArticulo.art_tipo_iva;
-        //objLdocumento.ldoc_cant_prn = 1;
-        //objLdocumento.ldoc_ter_id = idTerminal;
-        //objLdocumento.ldoc_varia_notas = null;
-        //objLdocumento.ldoc_err_prn = 1;
-        //objLdocumento.ldoc_usuario = idUsuario;
-
-        //objldocumento.
     }
 }

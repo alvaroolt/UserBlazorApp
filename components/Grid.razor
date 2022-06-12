@@ -1,5 +1,9 @@
 ﻿@using WebServiceApiRest.Models
 
+@* Grid es el componente en el que se muestra los artículos de la mesa. En él, además de
+    visualizar, podemos clicar entre las líneas para poder eliminarlas o modificarlas. Cada vez
+    que se actualice el documento con nuevas líneas o estas se borren, los cambios se verán reflejados aquí*@
+
 <SfGrid DataSource="ldocumento" Height="100%">
     <GridPageSettings PageSize="1000"></GridPageSettings>
     <GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple" PersistSelection="true"></GridSelectionSettings>
@@ -17,11 +21,13 @@
 </SfGrid>
 
 @code {
+    // instancia de ldocumentos que es enviado a Index (para que este pueda tratar con él)
     [Parameter]
     public EventCallback<Ldocumentos> ldocumentoToIndex { get; set; }
-
+    // recibe de Index el documento (pedido de la mesa) para poder visualizarlo
     [Parameter]
     public IEnumerable<Documentos> documento { get; set; }
+    // linea del documento recibido
     public IEnumerable<Ldocumentos> ldocumento { get; set; }
 
     //OnParametersSetAsync se ejecuta al iniciar el componente o cada vez que se actualiza su estado
@@ -37,12 +43,10 @@
             // si el documento está vacío, obtiene las líneas de un objeto vacío con la intención de "limpiar" el grid
             await getDocumentos(null);
         }
-
-        //int topRowIndex = this.gridGroupingControl1.TableControl.ViewLayout.LastVisibleRow - this.gridGroupingControl1.TableControl.TopRowIndex - 1;
-        //this.gridGroupingControl1.TableControl.SetTopRow(this.gridGroupingControl1.TableModel.RowCount - topRowIndex);
         await base.OnParametersSetAsync();
     }
 
+    // asigna cada línea a ldocumento para imprimirlo en el grid
     public async Task getDocumentos(IEnumerable<Documentos> documentoCode)
     {
         // si el argumento que recibe el método no está vacío, lo recorre para asignar los datos a ldocumento
@@ -59,15 +63,16 @@
             ldocumento = null;
             documento = null;
         }
-
     }
 
+    // envía a Index la línea seleccionada
     public void RowSelectHandler(RowSelectEventArgs<Ldocumentos> args)
     {
         var CustomerIDValue = args.Data;
         ldocumentoToIndex.InvokeAsync(CustomerIDValue);
     }
 
+    // borra la línea enviada a Index al deseleccionar
     public void RowDeselectHandler()
     {
         ldocumentoToIndex.InvokeAsync(null);

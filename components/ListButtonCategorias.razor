@@ -1,12 +1,9 @@
-﻿@*<h3>ListButtonCategorias</h3>*@
-
-@using UserBlazorApp.components;
-@using WebServiceApiRest.Models;
+﻿@using WebServiceApiRest.Models;
 @using WebServiceApiRest.Models.Response;
 @using System.Net.Http;
 @using System.Net.Http.Json;
 @inject HttpClient Http
-
+@* si se ha clicado el botón de mostrar las categorías, los datos recogidos anteriormente se resetean *@
 @if (buttonCategoriasClicked)
 {
     idArticuloFromSon = 0;
@@ -14,8 +11,12 @@
     numFam = 0;
     buttonCategoriasClicked = false;
 }
+
+@* si el boolean que controla la visión del componente es true y no se ha recibido ningun idArticulo del componente
+    ListButtonArticulos, procede a mostrar los botones de categorías*@
 @if (_isVisible && idArticuloFromSon == 0)
 {
+    // en caso de que la lista de categorías esté vacía, espera hasta que haya
     @if (CategoriasEnum == null)
     {
         <p>Cargando...</p>
@@ -33,31 +34,41 @@
     }
 }
 
-
-<ListButtonArticulos @ref="listcategories" numFam="@numFam" idArticuloToFather="pasarIdArticuloAIndex"></ListButtonArticulos>
+@* llamada al componente ListButtonArticulos *@
+<ListButtonArticulos numFam="@numFam" idArticuloToFather="pasarIdArticuloAIndex"></ListButtonArticulos>
 
 @code {
+    // boolean recibido de Index con el que se puede controlar volver a mostrar las categorías si el botón desde Index es clicado
     [Parameter]
     public bool buttonCategoriasClicked { get; set; } = false;
 
+    // pasa el id del artículo que se desea añadir al documento a Index
     [Parameter]
     public EventCallback<int> idArticuloToFather { get; set; }
 
-    public string Url = "https://localhost:44322";
+    // Url para peticiones HTTP
+    public string Url = "http://192.168.1.185:44322";
+
+    // instancia de clase Respuesta que trae en su Data la lista de familias/categorías
     Respuesta<List<Familias_art>> oRespuestaCategorias = new Respuesta<List<Familias_art>>();
 
+    // lista de categorías
     public IEnumerable<Familias_art> CategoriasEnum { get; set; }
 
+    // boolean que controla la visibilidad del componente
     private bool _isVisible;
+    // variable que almacena el número de familia/categoría escogido para posteriormente mostrar los artículos de esa categoria
     private int numFam;
-    ListButtonArticulos listcategories;
+    //ListButtonArticulos listcategories;
     private int idArticuloFromSon = 0;
 
+    // este método se ejecuta siempre en la carga inicial del componente
     protected override async Task OnInitializedAsync()
     {
         await getCategorias();
     }
 
+    // este método se ejecuta siempre en la carga inicial del componente o cuando se ve afectado su estado
     protected override async Task OnParametersSetAsync()
     {
         // cada vez que sus parámetros se actualizan, comprueba la visibilidad del componente.
@@ -73,6 +84,7 @@
         await base.OnParametersSetAsync();
     }
 
+    // solicitud HTTP GET para obtener las categorías de la BD
     public async Task getCategorias()
     {
         oRespuestaCategorias = await Http.GetFromJsonAsync<Respuesta<List<Familias_art>>>(Url + "/api/Familias_art");
@@ -86,6 +98,8 @@
         numFam = num;
     }
 
+    // recibe el id del artículo proveniente de ListButtonCategorias y lo almacena en una variable. Acto seguido,
+    // envía el id del artículo a Index
     private async void pasarIdArticuloAIndex(int num)
     {
         idArticuloFromSon = num;

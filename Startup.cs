@@ -38,28 +38,9 @@ namespace UserBlazorApp
             services.AddHttpClient();
             services.AddBlazoredSessionStorage();
             services.AddBlazoredLocalStorage();
-
-
-            // AddHttpClient permite enviar solicitudes y recibir respuestas HTTP de un recurso identificado por un URI.
-            //services.AddHttpClient<IServiceUser, ServiceUser>(user =>
-            //{
-            //    user.BaseAddress = new Uri("https://localhost:44327/"); //dirección de la API
-            //});
-            //services.AddHttpClient<IServiceAccount, ServiceAccount>(account =>
-            //{
-            //    account.BaseAddress = new Uri("https://localhost:44327/"); //dirección de la API
-            //});
-            //services.AddHttpClient<IServiceComprobarSiExisteMesa, ServiceComprobarSiExisteMesa>(comprobarSiExisteMesa =>
-            //{
-            //    comprobarSiExisteMesa.BaseAddress = new Uri("https://localhost:44327");
-            //});
-            //services.AddHttpClient<IServiceEliminarMesa, ServiceEliminarMesa>(eliminarMesa =>
-            //{
-            //    eliminarMesa.BaseAddress = new Uri("https://localhost:44327");
-            //});
             services.AddSingleton(new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:44322")
+                BaseAddress = new Uri("http://192.168.1.185:44322")
             });
             services.AddSyncfusionBlazor(); // agrega el servicio de Syncfusion para Blazor
         }

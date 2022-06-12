@@ -1,5 +1,10 @@
 ﻿@using Syncfusion.Blazor.Popups
 
+@* DialogContinue es un componente modal utilizado para la operación de eliminar el documento(pedido) de la mesa.
+    Al clicar en borrar documento, aparecerá un mensaje emergente avisando de si estás seguro de continuar.
+    Tiene las opciones de cancelar y seguir adelante.*@
+
+@* solo visible si isDialogVisible es true *@
 <SfDialog MinHeight="180px" Width="350px" @bind-Visible="@isDialogVisible" IsModal="true">
     <DialogTemplates>
         <Header>
@@ -14,7 +19,6 @@
         <DialogButton Content="Continuar" OnClick="(() => OnDialogBtnClick(true))" />
     </DialogButtons>
 </SfDialog>
-@*<SfButton @onclick="@OnOpenBtnClick">Open Dialog</SfButton>*@
 
 @code {
     //dialogContinue recibe el parámetro headerMensaje, el cual es un string para escribir en el header del dialog
@@ -30,7 +34,7 @@
     [Parameter]
     public bool isDialogVisible { get; set; } = true;
 
-    // método que le asigna a isDialogVisible el valor false
+    // método que le asigna a isDialogVisible el valor false y se lo pasa a Index
     private void OnDialogBtnClick(bool continueTask)
     {
         // continueTask devuelve true o false y se lo asigna a continueToFather, para pasar el dato al componente padre
@@ -45,10 +49,4 @@
         // oculta dialog
         isDialogVisible = false;
     }
-
-    // método para establecer el dialog como visible y que así aparezca
-    //private void OnOpenBtnClick()
-    //{
-    //    isDialogVisible = true;
-    //}
 }

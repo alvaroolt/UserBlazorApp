@@ -5,20 +5,21 @@
     Layout = null;
 }
 
+@* página de configuración de todas las páginas del proyecto *@
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="mobile-web-app-capable" content="yes" /> @*necesario para desaparecer la barra de direcciones cuando se utiliza la página como app en móvil*@
-    <title>UserBlazorApp</title>
+    <title>Comanda</title>
     <base href="~/" />
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" /> @*css de bootstrap*@
     <link href="css/site.css" rel="stylesheet" />
-    <link href="_content/Syncfusion.Blazor/styles/fabric.css" rel="stylesheet" />
-    <link href="css/styles.css" rel="stylesheet" />
+    <link href="_content/Syncfusion.Blazor/styles/fabric.css" rel="stylesheet" /> @*css de Syncfusion para Grid y Dialog*@
+    <link href="css/styles.css" rel="stylesheet" /> @*css propio*@
     <link href="_content/Syncfusion.Blazor.Themes/bootstrap5.css" rel="stylesheet" />
-    <script src="_content/Syncfusion.Blazor/scripts/syncfusion-blazor.min.js" type="text/javascript"></script>
+    <script src="_content/Syncfusion.Blazor/scripts/syncfusion-blazor.min.js" type="text/javascript"></script> @*javascript de SyncFusion para Grid y Dialog*@
 </head>
 
 <body>
@@ -26,6 +27,7 @@
         <component type="typeof(App)" render-mode="Server" />
     </app>
 
+    @* mensajes de error propios de Blazor *@
     <div id="blazor-error-ui">
         <environment include="Staging,Production">
             An error has occurred. This application may no longer respond until reloaded.
@@ -38,6 +40,6 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
-    <script src="_content/Microsoft.AspNetCore.ProtectedBrowserStorage/protectedBrowserStorage.js"></script>
+    <script src="_content/Microsoft.AspNetCore.ProtectedBrowserStorage/protectedBrowserStorage.js"></script> @*javascript para BrowserStorage*@
 </body>
 </html>

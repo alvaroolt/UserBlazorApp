@@ -1,9 +1,10 @@
-﻿@using WebServiceApiRest.Models
-
+﻿@* El componente Numpad es un teclado numérico utilizado para que el usuario escriba el número de mesa
+    con el que desea trabajar. Una vez el usuario selecciona un número de mesa, éste se envía a Index
+    para que muestre los datos necesarios, y el componente Numpad desaparece dando paso a ListButtonCategorias*@
 <div class="contenedornumpad">
     <div class="contenedorvisornumpad">
         <label for="visornumpad">Selección de mesa</label>
-        <input type="text" id="visornumpad" value="@value" disabled/>
+        <input type="text" id="visornumpad" value="@value" disabled />
     </div>
     <div class="numpads">
         <div class="row justify-content-md-center rownumpad">
@@ -82,10 +83,12 @@
         await base.OnParametersSetAsync();
     }
 
+    // según el valor de key, typeKey hará una acción u otra
     private void typeKey(int key)
     {
         switch (key)
         {
+            // key 0-9: escribe en el input el valor de key
             case 0:
             case 1:
             case 2:
@@ -102,6 +105,7 @@
                 }
                 value += key.ToString().Trim();
                 break;
+            // key -1: se borra el último elemento del input
             case -1:
                 if (value.Length > 0)
                 {
@@ -110,11 +114,12 @@
                     value = newvalue;
                 }
                 break;
+            // key -2: se borran todos los elementos de input
             case -2:
                 value = "";
                 break;
+            // escribe una coma -> ,
             case -3:
-                //agregar condición que impida más de un , en el string
                 if (value.Substring(value.Length - 1) != ",")
                 {
                     value += ",";
@@ -123,6 +128,7 @@
         }
     }
 
+    // comprueba el valor que se va a enviar, y si es válido, procede a pasarlo a Index
     private void checkAndSendValue()
     {
         // comprueba que el valor que se envía al componente padre no sea una cadena vacía

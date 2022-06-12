@@ -13,18 +13,16 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <AuthorizeView>
+    @* Authorized limita el contenido a personas autentificadas *@
     <Authorized>
         <div class="contenedorgridandmenubuttons">
             <div class="contenedorgrid">
+                @* llamada al componente Grid *@
                 <Grid documento="DocumentosEnum" ldocumentoToIndex="obtenerLdocumentoFromGrid"></Grid>
-                @*<Grid documento="DocumentosEnum"></Grid>*@
             </div>
             <div class="contenedormenubuttons">
                 <div class="container border">
                     <div class="contenedorvisores">
-                        @*<p class="visorprecio">@nombreUsuario</p>*@
-                        @*<p class="visorprecio">@nombreTerminal</p>*@
-                        @*<p>Cookie: @msgcookie</p>*@
                         <p class="visorprecio">@precioTotal€</p>
                     </div>
                     <div class="row justify-content-md-center rowmenubuttons">
@@ -55,31 +53,17 @@
                     <div class="row justify-content-md-center rowmenubuttons">
                         <div class="col-auto">
                             <button @onclick="checkButtonCategoriasClicked" class="menubutton categorybutton backgroundblue">Categorías</button>
-                            @*<button class="menubutton categorybutton">Categorías</button>*@
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        @*@if (ldocumentoFromGrid != null)
-        {
-            <p>Id de linea: @ldocumentoFromGrid.ldoc_id</p>
-        }*@
-        @*<ListButton></ListButton>*@
 
-        @*llamamos al teclado numérico*@
-
-        @*@if (numMesa != 0 || categoriasClicked)*@
-        @*@if (idArticulo != 0)
-            {
-                <p>Id del articulo: @idArticulo</p>
-            }*@
         @if (numMesa != 0)
         {
-            if (ldocumentoFromGrid != null)
+            if (isSecondNumpadVisible)
             {
-                <NumpadLineas cantidadToIndex="obtenerCantidadLinea" precioToIndex="obtenerPrecioLinea"></NumpadLineas>
-                @*<p>@numCantidad</p>*@
+                <NumpadLineas cantidadToIndex="obtenerCantidadLinea" precioToIndex="obtenerPrecioLinea" codebarToIndex="obtenerCodebar"></NumpadLineas>
             }
             else
             {
@@ -90,8 +74,6 @@
         {
             <Numpad numMesaToIndex="obtenerNumMesa"></Numpad>
         }
-        @*<NumpadLineas cantidadToIndex="obtenerCantidadLinea"></NumpadLineas>
-            <p>@numCantidad</p>*@
 
         <DialogContinue isDialogVisible="@isDialogContinueVisible" continueToFather="continueOperation" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogContinue>
         <DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="@headerMensaje" mensaje="@mensaje"></DialogInfo>
@@ -101,7 +83,7 @@
                 <button class="btn btn-primary p-4 rounded-0 navbutton" @onclick="LogoutUserRequest"><img class="menuimg" src="images/salir.png" /></button>
             </div>
             <div class="col-auto contenedornavbutton">
-                <button class="btn btn-primary p-4 rounded-0 navbutton"><img class="menuimg" src="images/masmenos.png" /></button>
+                <button class="btn btn-primary p-4 rounded-0 navbutton" @onclick="showSecondNumpad"><img class="menuimg" src="images/masmenos.png" /></button>
             </div>
             <div class="col-auto contenedornavbutton">
                 <button class="btn btn-primary p-4 rounded-0 navbutton"></button>
@@ -119,6 +101,7 @@
     </Authorized>
 </AuthorizeView>
 <AuthorizeView>
+    @* NotAuthorized limita el contenido a personas no autentificadas *@
     <NotAuthorized>
         <p>No has iniciado sesión</p>
     </NotAuthorized>
@@ -126,7 +109,7 @@
 
 @code {
     // url que apunta a la api
-    public string Url = "https://localhost:44322";
+    public string Url = "http://192.168.1.185:44322";
 
     // respuesta recibe si ha habido éxito en la solicitud, mensaje si fuese necesario y los datos solicitados
     Respuesta<List<Documentos>> oRespuestaDocumentos = new Respuesta<List<Documentos>>();
@@ -145,22 +128,26 @@
     private bool isDialogInfoVisible = false;
     // boolean que controla la visibilidad de las categorías
     private bool isButtonCategoriasClicked = false;
-    string nombreUsuario = "";
-    string nombreTerminal = "";
-    private string msgcookie;
+    // terminalActual recoge el terminal con el que se ha iniciado sesión
     Terminal terminalActual { get; set; }
+    // docId almacena el identificador del documento con el que se está trabajando
     private int docId = 0;
+    // variable que controla la visibilidad del componente DialogContinue
     private bool isDialogContinueVisible = false;
+    // idArticulo almacena el identificador del artículo que recibimos de ListButtonCategorias
     private int idArticulo = 0;
-    private int numCantidad = 0;
-
-    // variable mensaje del popup (body)
+    // instancia del objeto Codebars que almacena los datos recibidos después de seleccionar Codebars en NumpadLineas
+    private Codebars objCodebar = new Codebars();
+    // boolean que controla la visibilidad del componente NumpadLineas
+    private bool isSecondNumpadVisible = false;
+    // variable mensaje del Dialog (body)
     private string mensaje = "";
-    // variable mensaje del popup (header)
+    // variable mensaje del Dialog (header)
     private string headerMensaje = "";
     // boolean que recibe index del componente dialog para saber si continuar con la operación
     private bool continueFromSon;
 
+    // este método se ejecuta siempre en la carga inicial de la página
     protected override async Task OnInitializedAsync()
     {
         // se almacena en authState el usuario actual
@@ -176,45 +163,106 @@
             NavigationManager.NavigateTo("/");
         }
 
-        msgcookie = await localStorage.GetItemAsync<string>("idTerminal");
-
+        // formateo del precio total de la mesa para que muestre 0.00 en vez de 0
         string s = String.Format("{0:N2}", precioTotal);
         precioTotal = Convert.ToDecimal(s);
     }
 
+    // recibe el número de mesa del componente Numpad
     private async void obtenerNumMesa(int num)
     {
         isDialogInfoVisible = false;
         //almacenamos en numMesa el valor recibido en num, el cual Index recibe de Numpad
         numMesa = num;
 
+        // una vez tenemos el número de mesa, obtenemos el documento
         await getDocumentos();
+        // una vez tenemos el número de mesa, obtenemos el precio total del documento
         await getPrecio();
-        //NECESARIO PARA ACTUALIZAR GRID
+        //NECESARIO PARA REFRESCAR GRID
         StateHasChanged();
     }
 
+    // recibe el número cantidad para modificar la línea
     private async void obtenerCantidadLinea(int num)
     {
         isDialogInfoVisible = false;
-        ldocumentoFromGrid.ldoc_cantidad = num;
 
-        await Http.PutAsJsonAsync<Ldocumentos>(Url + "/api/Ldocumento", ldocumentoFromGrid);
-        ldocumentoFromGrid = null;
-        await getDocumentos();
-        await getPrecio();
-        StateHasChanged();
+        // comprobación de que haya línea seleccionada
+        if (ldocumentoFromGrid != null && ldocumentoFromGrid.ldoc_id != 0)
+        {
+            ldocumentoFromGrid.ldoc_cantidad = num;
+            // solicitud HTTP PUT para actualizar la cantidad de la línea
+            await Http.PutAsJsonAsync<Ldocumentos>(Url + "/api/Ldocumento", ldocumentoFromGrid);
+
+            // se deselecciona la línea
+            ldocumentoFromGrid = null;
+
+            // volvemos a llamar al documento y a su precio para actualizarlo
+            await getDocumentos();
+            await getPrecio();
+
+            // Refrescar Grid
+            StateHasChanged();
+        }
+        else
+        {
+            isDialogInfoVisible = true;
+            mensaje = "Selecciona una fila del pedido";
+        }
+
     }
 
+    // recibe el número precio para modificar la línea
     private async void obtenerPrecioLinea(int num)
     {
         isDialogInfoVisible = false;
-        ldocumentoFromGrid.ldoc_importe_pvp = num;
 
-        await Http.PutAsJsonAsync<Ldocumentos>(Url + "/api/Ldocumento", ldocumentoFromGrid);
-        ldocumentoFromGrid = null;
+        // comprobación de que haya línea seleccionada
+        if (ldocumentoFromGrid != null && ldocumentoFromGrid.ldoc_id != 0)
+        {
+            ldocumentoFromGrid.ldoc_pvp = num;
+            // solicitud HTTP PUT para actualizar el precio de la línea
+            await Http.PutAsJsonAsync<Ldocumentos>(Url + "/api/Ldocumento", ldocumentoFromGrid);
+
+            // se deselecciona la línea
+            ldocumentoFromGrid = null;
+
+            // volvemos a llamar al documento y a su precio para actualizarlo
+            await getDocumentos();
+            await getPrecio();
+            // Refrescar Grid
+            StateHasChanged();
+        }
+        else
+        {
+            isDialogInfoVisible = true;
+            mensaje = "Selecciona una fila del pedido";
+        }
+    }
+
+    // recibe el número codebar para añadir la línea
+    private async void obtenerCodebar(string code)
+    {
+        isDialogInfoVisible = false;
+
+        // instancia de Respuesta que recibe en Data el codebar mediante una solicitud HTTP GET
+        Respuesta<Codebars> oRespuestaCodebar = await Http.GetFromJsonAsync<Respuesta<Codebars>>(Url + "/api/Codebars/" + code);
+        // se almacena los datos en la instancia de Codebars
+        objCodebar = oRespuestaCodebar.Data;
+
+        // arraylist que almacena todos los campos necesarios para realizar el HTTP POST más adelante
+        ArrayList paramList = new ArrayList();
+        paramList.Add(objCodebar.cbar_art_id); // id del artículo
+        paramList.Add(numMesa); // número de la mesa
+        paramList.Add(terminalActual.ter_id); // id del terminal en uso
+                                              // solicitud HTTP POST para añadir línea al documento
+        await Http.PostAsJsonAsync(Url + "/api/Ldocumento", paramList);
+
+        // volvemos a llamar al documento y a su precio para actualizarlo
         await getDocumentos();
         await getPrecio();
+        // Refrescar Grid
         StateHasChanged();
     }
 
@@ -226,8 +274,6 @@
 
         // asigna a la variable false para indicar que no es visible, a la vez que la variable se asigna al parámetro del dialog
         isDialogInfoVisible = false;
-        // notifica al componente dialog que sus parametros han cambiado, para que se actualice
-        //StateHasChanged();
         // entra en el if si no hubo éxito (no existe la mesa especificada)
         if (oRespuestaDocumentos.Exito == 0)
         {
@@ -239,8 +285,6 @@
             numMesa = 0;
             precioTotal = 0;
             DocumentosEnum = null;
-            // ACTUALIZA GRID
-            //StateHasChanged();
         }
         else
         {
@@ -249,36 +293,45 @@
             //almacenamos los datos de la respuesta en DocumentosEnum
             DocumentosEnum = (IEnumerable<Documentos>)oRespuestaDocumentos.Data;
             await localStorage.SetItemAsync("LSdocumento", DocumentosEnum);
-            //IEnumerable<Documentos> x = await localStorage.GetItemAsync<IEnumerable<Documentos>>("LSdocumento");
         }
     }
 
+    // elimina el documento y todas sus líneas
     public async Task deleteDocumento()
     {
+        // comprueba que haya documento
         if (DocumentosEnum != null)
         {
+            // último aviso para eliminar el documento
             isDialogContinueVisible = true;
             headerMensaje = "Aviso";
             mensaje = "Estás a punto de borrar el documento de la mesa " + numMesa + ". ¿Deseas continuar?";
-            //StateHasChanged();
         }
         else
         {
+            // notifica de que se ha de introducir una mesa
             isDialogInfoVisible = true;
             headerMensaje = "Error";
             mensaje = "Introduce una mesa";
         }
     }
 
+    // elimina una línea del documento
     public async Task deleteLineaDocumento()
     {
+        // comprueba que haya documento y se haya seleccionado una línea
         if (oRespuestaDocumentos.Exito == 1 && ldocumentoFromGrid != null)
         {
+            // solicitud HTTP DELETE de la línea
             await Http.DeleteAsync(Url + "/api/Ldocumento/" + ldocumentoFromGrid.ldoc_id + "/" + ldocumentoFromGrid.ldoc_art_id + "/" + numMesa);
+
+            // limpiamos ldocumentoFromGrid
+            ldocumentoFromGrid = null;
+
+            // volvemos a llamar al documento y a su precio para actualizarlo
             await getDocumentos();
             await getPrecio();
-
-            ldocumentoFromGrid = null;
+            // refrescar Grid
             StateHasChanged();
         }
         else
@@ -301,34 +354,34 @@
         }
     }
 
+    // obtiene el objeto ldocumento seleccionado en grid
     void obtenerLdocumentoFromGrid(Ldocumentos ldocumento)
     {
         isDialogInfoVisible = false;
         ldocumentoFromGrid = ldocumento;
     }
 
-
+    // continueOperation es el encargado de continuar con la operación si se ha clicado en aceptar
     private async Task continueOperation(bool boolContinueOperation)
     {
         isDialogContinueVisible = false;
         isDialogInfoVisible = false;
         StateHasChanged();
 
+        // comprueba que haya documento abierto
         if (oRespuestaDocumentos.Exito == 1)
         {
-
+            // si se ha clicado en aceptar
             if (boolContinueOperation)
             {
+                // solicitud HTTP DELETE del documento y todas sus líneas
                 await Http.DeleteAsync(Url + "/api/Mesa/" + docId);
                 oRespuestaDocumentos = null;
                 DocumentosEnum = null;
-                //await getPrecio();
                 precioTotal = 0;
                 string s = String.Format("{0:N2}", precioTotal);
                 precioTotal = Convert.ToDecimal(s);
-                StateHasChanged();
             }
-
         }
         else
         {
@@ -336,21 +389,19 @@
             isDialogInfoVisible = true;
             // se asigna a mensaje el mensaje de error recibido de la respuesta y el número de mesa en concreto
             mensaje = "Selecciona una mesa para eliminar";
-            // indica a los componentes hijos que sus valores han cambiado para que se actualicen
-            StateHasChanged();
         }
 
+        // Refrescar Grid
         StateHasChanged();
-
     }
 
     // notifica que se ha clicado Categorías al componente que lista las categorías
     private async Task checkButtonCategoriasClicked()
     {
         isButtonCategoriasClicked = true;
-        //StateHasChanged();
     }
 
+    // método que cierra la sesión activa
     private async Task LogoutUserRequest()
     {
         isDialogInfoVisible = true;
@@ -372,6 +423,7 @@
         }
     }
 
+    // este método se ejecuta siempre en la carga final de la página,o cuando alguno de sus parámetros ha sido alterado
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (isButtonCategoriasClicked)
@@ -387,10 +439,9 @@
         {
             // Convertir de Json a objeto
             Usuarios usuario = JsonConvert.DeserializeObject<Usuarios>(user);
+            // recupera el terminal del sessionStorage
             Terminal terminal = await sessionStorage.GetItemAsync<Terminal>("terminal");
 
-            nombreUsuario = usuario.user_nom;
-            nombreTerminal = terminal.ter_nom;
             if (firstRender)
             {
                 StateHasChanged();
@@ -398,12 +449,14 @@
         }
     }
 
+    // solicitud HTTP PUT para bloquear o desbloquear el terminal
     private async Task updateTerminal(Terminal ter, int bloq)
     {
         ter.ter_bloqueado = bloq;
         await Http.PutAsJsonAsync<Terminal>(Url + "/api/Terminal", ter);
     }
 
+    // método que guarda la mesa y resetea todos los valores de la página para comenzar de nuevo con otra mesa
     private async Task showNumpadAgain()
     {
         if (oRespuestaDocumentos != null && oRespuestaDocumentos.Exito == 1)
@@ -439,6 +492,7 @@
 
     }
 
+    // obtiene el id del artículo que desea añadirse al documento y hace una solicitud HTTP POST
     private async void obtenerIdArticuloFromSon(int num)
     {
         idArticulo = num;
@@ -451,5 +505,18 @@
         await getDocumentos();
         await getPrecio();
         StateHasChanged();
+    }
+
+    // método que visualiza el teclado numérico para introducir cantidad, precio o codebars
+    private void showSecondNumpad()
+    {
+        isDialogInfoVisible = false;
+
+        // el método hará su cometido solo si se ha introducido una mesa
+        if (numMesa != 0)
+        {
+            // cambia la visibilidad del numpad de cantidades y precios
+            isSecondNumpadVisible = !isSecondNumpadVisible;
+        }
     }
 }

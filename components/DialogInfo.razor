@@ -1,5 +1,10 @@
 ﻿@using Syncfusion.Blazor.Popups
 
+@* DialogInfo es un componente modal utilizado para mostrar información al usuario.
+    Si se produce una acción indebida, este modal se mostrará con un mensaje descriptivo
+    de lo que ocurre.*@
+
+@* solo visible si isDialogVisible es true *@
 <SfDialog MinHeight="180px" Width="350px" @bind-Visible="@isDialogVisible" IsModal="true">
     <DialogTemplates>
         <Header>
@@ -13,7 +18,6 @@
         <DialogButton Content="OK" OnClick="@OnDialogBtnClick" />
     </DialogButtons>
 </SfDialog>
-@*<SfButton @onclick="@OnOpenBtnClick">Open Dialog</SfButton>*@
 
 @code {
     //dialogContinueOperation recibe el parámetro headerMensaje, el cual es un string para escribir en el header del dialog
@@ -32,10 +36,4 @@
         // oculta dialog
         isDialogVisible = false;
     }
-
-    // método para establecer el dialog como visible y que así aparezca
-    //private void OnOpenBtnClick()
-    //{
-    //    isDialogVisible = true;
-    //}
 }

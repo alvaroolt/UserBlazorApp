@@ -9,12 +9,10 @@
 @inject HttpClient Http
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-@*@inject ICookie cookie*@
 
 <div class="contenedornumpadlogin">
     <div class="contenedorvisornumpad">
         <label for="visornumpad">Iniciar sesión</label>
-        @*<p>Id del terminal almacenado en la cookie: @idTerminalLocalStorage</p>*@
         <input type="text" id="visornumpad" value="@value" disabled />
     </div>
     <div class="numpadLogin">
@@ -73,8 +71,6 @@
                     {
                         // si el id de terminal almacenado en la cookie coincide con el id del terminal del foreach, entra al if
                         // mostrando el option como por defecto, y asignando ese id al terminal "actual"
-                        //if (idTerminalLocalStorage != null)
-                        //{
                         if (idTerminalLocalStorage == fterminal.ter_id)
                         {
                             <option selected="selected" value="@fterminal.ter_id">@fterminal.ter_nom</option>
@@ -84,9 +80,7 @@
                         {
                             <option value="@fterminal.ter_id">@fterminal.ter_nom</option>
                         }
-                        //}
                     }
-
                 }
             </select>
         </div>
@@ -95,27 +89,38 @@
         </div>
     </div>
 </div>
+
+@* llamada del componente DialogInfo *@
 <DialogInfo isDialogVisible="@isDialogInfoVisible" headerMensaje="Error" mensaje="@mensaje"></DialogInfo>
 
 @code {
     // variable que almacena el número que se escribe con los botones del teclado numérico
     private string value = "";
-    public string Url = "https://localhost:44322";
+    // url necesaria para realizar solicitudes HTTP
+    public string Url = "http://192.168.1.185:44322";
+    // instancia de Respuesta que almacena el usuario con el que se inicia sesión
     Respuesta<Usuarios> oRespuestaUsuarios = new Respuesta<Usuarios>();
+    // instancia de la clase Usuarios donde se almacena el Data de oRespuestaUsuarios
     Usuarios usuario = new Usuarios();
+    // instancia de Respuesta que almacena el terminal con el que se inicia sesión
     Respuesta<List<Terminal>> oRespuestaTerminales = new Respuesta<List<Terminal>>();
+    // lista de terminales
     public IEnumerable<Terminal> TerminalesEnum { get; set; }
+    // instancia de la clase Terminal donde se almacena el Data de oRespuestaTerminales
     public Terminal terminal { get; set; }
+    // boolean que controla la visibilidad de DialogInfo
     private bool isDialogInfoVisible = false;
+    // variable donde se almacena el mensaje de aviso de DialogInfo
     private string mensaje = "";
-    // almacena el id del terminal de la cookie
+    // almacena el id del terminal del localStorage
     private int idTerminalLocalStorage;
 
-
+    // según el valor de key, typeKey hará una acción u otra
     private void typeKey(int key)
     {
         switch (key)
         {
+            // key 0-9: escribe en el input el valor de key
             case 0:
             case 1:
             case 2:
@@ -128,6 +133,7 @@
             case 9:
                 value += key.ToString().Trim();
                 break;
+            // key -1: se borra el último elemento del input
             case -1:
                 if (value.Length > 0)
                 {
@@ -136,12 +142,14 @@
                     value = newvalue;
                 }
                 break;
+            // key -2: se borran todos los elementos de input
             case -2:
                 value = "";
                 break;
         }
     }
 
+    // procede al inicio de sesión
     private async Task LoginUserRequest()
     {
         if (value != "")
@@ -149,6 +157,7 @@
             // obtiene el usuario de la bd según la contraseña enviada
             await getUsuarios(value);
 
+            // comprueba si hubo éxito al obtener el usuario, y que se haya seleccionado un terminal
             if (oRespuestaUsuarios.Exito == 1 && terminal != null)
             {
                 // actualiza la lista de terminales, por si ha sido alterada la tabla de temrinales en el proceso de iniciar sesión
@@ -156,6 +165,7 @@
                 // se refresca el terminal actual, por si ha sido alterada la tabla de terminales en el proceso de iniciar sesión
                 terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == terminal.ter_id);
 
+                // si el terminal está desbloqueado, o bloqueado por el último terminal usado en el dispositivo, entra en el if
                 if (terminal.ter_bloqueado == 0 || (terminal.ter_bloqueado == 1 && idTerminalLocalStorage == terminal.ter_id))
                 {
                     // llama al método de iniciar sesión del servicio UserService
@@ -168,8 +178,8 @@
                     await sessionStorage.SetItemAsync("usuario", usuario);
                     await sessionStorage.SetItemAsync("terminal", terminal);
 
+                    // redirige a Index
                     NavigationManager.NavigateTo("/index");
-
                 }
                 else
                 {
@@ -199,18 +209,8 @@
         }
     }
 
-    private async Task LogoutUserRequest()
-    {
-        // llama a LogOutAsync del servicio UserService, el cual se encarga de cerrar la sesión
-        await ServiceProvider.Get<UserService>().LogoutAsync();
-
-        // actualiza el terminal para desbloquearlo a otros usuarios
-        await updateTerminal(terminal, 1);
-
-        // una vez cierra la sesión, redirige a la página principal
-        NavigationManager.NavigateTo("/");
-    }
-
+    // hace la solicitud HTTP GET con la contraseña escrita por el usuario. Tendrá éxito si alguna contraseña
+    // coincide con la introducida por el usuario
     public async Task getUsuarios(string pass)
     {
         oRespuestaUsuarios = await Http.GetFromJsonAsync<Respuesta<Usuarios>>(Url + "/api/Usuarios/" + pass);
@@ -219,6 +219,7 @@
         StateHasChanged();
     }
 
+    // solicitud HTTP GET para obtener los terminales y el usuario pueda escoger uno
     public async Task getTerminales()
     {
         //almacenamos en oRespuesta la respuesta que recibimos de la api
@@ -249,17 +250,13 @@
         }
     }
 
+    // este método se ejecuta siempre en la carga inicial de la página
     protected override async Task OnInitializedAsync()
     {
         await getTerminales();
-        //if (await localStorage.GetItemAsync<string>("idTerminal") == "")
-        //{
-        //    await localStorage.SetItemAsync("idTerminal", "1");
-        //    idTerminalLocalStorage = await localStorage.GetItemAsync<string>("idTerminal");
-        //    terminal = TerminalesEnum.FirstOrDefault(x => x.ter_id == 1);
-        //}
     }
 
+    // este método se ejecuta siempre en la carga final de la página,o cuando alguno de sus parámetros ha sido alterado
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         // recupera en user la información de usuario utilizando SessionStorage
@@ -288,7 +285,7 @@
         }
     }
 
-    // método utilizado para bloquear o desbloquear el terminal
+    // método utilizado para bloquear o desbloquear el terminal mediante una solicitud HTTP PUT
     private async Task updateTerminal(Terminal ter, int bloq)
     {
         ter.ter_bloqueado = bloq;

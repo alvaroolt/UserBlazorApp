@@ -1,5 +1,6 @@
-﻿@using WebServiceApiRest.Models
-
+﻿@* El componente NumpadLineas es un teclado numérico utilizado para que el usuario escriba la cantidad o el precio
+    del artículo seleccionado, y así poder modificarlo. Este componente solo se encuentra operativo una vez que
+    se ha escogido una mesa, y se muestra clicando en el botón de la derecha de cerrar sesión*@
 <div class="contenedornumpad">
     <div class="contenedorvisornumpad">
         <label for="visornumpad">Seleccionar operación</label>
@@ -17,7 +18,6 @@
                 <button class="numpadbutton" @onclick="e => typeKey(9)">9</button>
             </div>
             <div class="colnumpad">
-                @* llamamos al evento callback numMesaToIndex, que se encarga de enviar los números tecleados (parseados a int en vez de string) *@
                 <button class="numpadlargebutton">TRSP</button>
             </div>
         </div>
@@ -32,7 +32,7 @@
                 <button class="numpadbutton" @onclick="e => typeKey(6)">6</button>
             </div>
             <div class="colnumpad">
-                <button class="numpadlargebutton">A</button>
+                <button class="numpadlargebutton" @onclick="checkAndSendCodebar">A</button>
             </div>
         </div>
         <div class="row justify-content-md-center rownumpad">
@@ -67,11 +67,15 @@
 </div>
 
 @code {
-    // parametro que se pasa al componente padre (index)
+    // parametro cantidad que se pasa al componente padre (index)
     [Parameter]
     public EventCallback<int> cantidadToIndex { get; set; }
+    // parametro precio que se pasa al componente padre (index)
     [Parameter]
     public EventCallback<int> precioToIndex { get; set; }
+    // parametro codebar que se pasa al componente padre (index)
+    [Parameter]
+    public EventCallback<string> codebarToIndex { get; set; }
 
     // variable que almacena el número que se escribe con los botones de numpad
     private string value = "";
@@ -84,10 +88,12 @@
         await base.OnParametersSetAsync();
     }
 
+    // según el valor de key, typeKey hará una acción u otra
     private void typeKey(int key)
     {
         switch (key)
         {
+            // key 0-9: escribe en el input el valor de key
             case 0:
             case 1:
             case 2:
@@ -104,11 +110,12 @@
                 }
                 value += key.ToString().Trim();
                 break;
+            // key -1: borra todos los elementos del input
             case -1:
                 value = "";
                 break;
+            // key -2: escribe una coma en el input -> ,
             case -2:
-                //agregar condición que impida más de un , en el string
                 if (value.Substring(value.Length - 1) != ",")
                 {
                     value += ",";
@@ -117,21 +124,32 @@
         }
     }
 
+    // comprueba el valor cantidad que se va a enviar, y si es válido, procede a pasarlo a Index
     private void checkAndSendCantidad()
     {
-        // comprueba que el valor que se envía al componente padre no sea una cadena vacía
         if (value != "")
         {
             cantidadToIndex.InvokeAsync(Int32.Parse(value));
         }
     }
 
+    // comprueba el valor precio que se va a enviar, y si es válido, procede a pasarlo a Index
     private void checkAndSendPrecio()
     {
         // comprueba que el valor que se envía al componente padre no sea una cadena vacía
         if (value != "")
         {
             precioToIndex.InvokeAsync(Int32.Parse(value));
+        }
+    }
+
+    // comprueba el valor codebar que se va a enviar, y si es válido, procede a pasarlo a Index
+    private void checkAndSendCodebar()
+    {
+        // comprueba que el valor que se envía al componente padre no sea una cadena vacía
+        if (value != "")
+        {
+            codebarToIndex.InvokeAsync((value));
         }
     }
 }
